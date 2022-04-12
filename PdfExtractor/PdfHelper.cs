@@ -36,6 +36,36 @@ namespace PdfExtractor
             return null;
         }
 
+        public static OpenRect? GetHeaderRectangle(Page page, string headerWords)
+        {
+            var words = page.GetWords().ToList();
+            var rect = GetRect(words, headerWords.Split(' '));
+            if (!rect.HasValue)
+            {
+                return null;
+            }
+            var headerRect = rect.Value;
+
+            var rects = page.ExperimentalAccess.Paths.Select(p => p.GetBoundingRectangle())
+                                                     .Where(r => r.HasValue)
+                                                     .Cast<PdfRectangle>()
+                                                     .Where(r => r.Centroid.Y < headerRect.Top)
+                                                     .ToList();
+
+            var rects2 = rects.Where(r => r.Left <= headerRect.Left + 1 &&
+                                          r.Right >= headerRect.Right - 1)
+                              .ToList();
+
+            var rect2 = rects2.First();
+
+            return new OpenRect
+            {
+                Left = rect2.Left,
+                Top = rect2.Top,
+                Right = rect2.Right
+            };
+        }
+
         public static IEnumerable<Tuple<double, string>> GetLines(IEnumerable<Word> words)
         {
             foreach (var group in words.GroupBy(d => d.BoundingBox.Centroid.Y))
