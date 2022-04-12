@@ -2,18 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text.RegularExpressions;
 using UglyToad.PdfPig;
-using UglyToad.PdfPig.Content;
 
 namespace PdfExtractor
 {
     public class SberParser : IParser
     {
-        // e.g.: 29.09.202110:15
-        private readonly Regex _dateRegex = new(@"\d{2}\.\d{2}\.\d{4}", RegexOptions.Compiled);
-        private readonly Regex _timeRegex = new(@"\d{2}:\d{2}", RegexOptions.Compiled);
-
         public IReadOnlyList<Operation> Parse(string path)
         {
             var operations = new List<Operation>();
@@ -22,149 +16,112 @@ namespace PdfExtractor
             {
                 foreach (var page in document.GetPages())
                 {
-                    var rowWords = new List<Word>();
-                    var words = SplitY(page.GetWords()).ToList();
-                    var isInsizeRow = false;
-                    for (var i = 0; i < words.Count - 1; i++)
+                    var paths = page.ExperimentalAccess.Paths;
+                    if (paths.Count < 5)
                     {
-                        var word = words[i].Text;
-                        var nextWord = words[i+1].Text;
-                        if (_dateRegex.IsMatch(word) && _timeRegex.IsMatch(nextWord))
+                        continue;
+                    }
+
+                    var words = PdfHelper.Split(page.GetWords()).ToList();                    
+
+                    var dateHeader = paths[paths.Count - 5].GetBoundingRectangle().Value;
+                    var descriptionHeader = paths[paths.Count - 4].GetBoundingRectangle().Value;
+                    var amountHeader = paths[paths.Count - 3].GetBoundingRectangle().Value;
+                    var footer = paths[paths.Count - 1].GetBoundingRectangle().Value;
+
+
+                    var dateWords = words.Where(w => w.BoundingBox.Centroid.X > dateHeader.Left &&
+                                                     w.BoundingBox.Centroid.X < dateHeader.Right &&
+                                                     w.BoundingBox.Centroid.Y < dateHeader.Top)
+                                         .ToList();
+                    var dateTimes = new List<Tuple<double, DateTime>>();
+                    for (var i = 0; i < dateWords.Count; i += 4)
+                    {
+                        var y = dateWords[i].BoundingBox.Centroid.Y;
+
+                        var dateToken = dateWords[i].Text;
+                        var timeToken = dateWords[i + 1].Text;
+
+                        var date = DateTime.ParseExact(dateToken, "dd.MM.yyyy", CultureInfo.InvariantCulture);
+                        var time = DateTime.ParseExact(timeToken, "HH:mm", CultureInfo.InvariantCulture);
+
+                        var dateTime = date + time.TimeOfDay;
+                        dateTimes.Add(Tuple.Create(y, dateTime));
+                    }
+
+                    // category is on line with date time
+                    // description is between lines wih date time
+                    var descriptions = new List<string>();
+                    for (var i = 0; i < dateTimes.Count; i++)
+                    {
+                        var top = dateTimes[i].Item1;
+                        double bottom;
+                        if (i == dateTimes.Count-1)
                         {
-                            if (isInsizeRow)
-                            {
-                                var operation = Parse(rowWords);
-                                operations.Add(operation);
-                                rowWords.Clear();
-                            }
-                            isInsizeRow = true;
+                            bottom = footer.Bottom;
                         }
-                        if (isInsizeRow)
+                        else
                         {
-                            rowWords.Add(words[i]);
+                            bottom = dateTimes[i+1].Item1;
+                        }
+
+                        var descriptionWords = words.Where(w => w.BoundingBox.Centroid.X > descriptionHeader.Left &&
+                                                                w.BoundingBox.Centroid.X < descriptionHeader.Right &&
+                                                                w.BoundingBox.Top < top &&
+                                                                w.BoundingBox.Bottom > bottom)
+                                                    .ToList();
+                        var description = string.Join(" ", descriptionWords.Select(w => w.Text));
+                        descriptions.Add(description);
+                    }
+
+
+                    var amountWords = words.Where(w => w.BoundingBox.Centroid.X > amountHeader.Left &&
+                                                       w.BoundingBox.Centroid.X < amountHeader.Right &&
+                                                       w.BoundingBox.Centroid.Y < amountHeader.Top &&
+                                                       w.BoundingBox.Centroid.Y > footer.Top);
+                    var amountLines = PdfHelper.GetLinesByBottom(amountWords);
+                    var amounts = new List<double>();
+                    foreach (var line in amountLines)
+                    {
+                        var amountToken = line.Replace(',', '.').Replace(" ", "");
+                        if (string.IsNullOrEmpty(amountToken))
+                        {
+                            throw new ParsingException("Empty amount token");
+                        }
+                        if (!double.TryParse(amountToken, out double amount))
+                        {
+                            throw new ParsingException($"Could not parse an amount token {amountToken}");
+                        }
+
+                        if (amountToken[0] == '+')
+                        {
+                            amounts.Add(amount);
+                        }
+                        else
+                        {
+                            amounts.Add(-amount);
                         }
                     }
 
-                    // last row
-                    if (rowWords.Count > 0)
+                    var pageOperationsCount = dateTimes.Count;
+                    if (descriptions.Count != pageOperationsCount || amounts.Count != pageOperationsCount)
                     {
-                        rowWords.Add(words[^1]);
-                        rowWords = RemoveFooter(rowWords).ToList();
-                        var lastOperation = Parse(rowWords);
-                        operations.Add(lastOperation);
+                        throw new ParsingException("Found different number of attributes");
+                    }
+
+                    for (var i = 0; i < pageOperationsCount; i++)
+                    {
+                        operations.Add(new Operation
+                        {
+                            Amount = amounts[i],
+                            Description = descriptions[i],
+                            DateTime = dateTimes[i].Item2
+                        });
                     }
                 }
             }
 
             return operations;
-        }
-
-        public Operation Parse(List<Word> row)
-        {
-            var dateTime = DateTime.ParseExact(row[0].Text + row[1].Text,
-                                               "dd.MM.yyyyHH:mm",
-                                               null);
-
-            // find las word in amount expression
-            // last word is very previous before second date
-            // 1. check there are two instances of date
-            var dates = row.Where(w => DateTime.TryParseExact(w.Text, "dd.MM.yyyy", null, DateTimeStyles.None, out DateTime dateTime))
-                           .ToList();
-            if (dates.Count != 2)
-            {
-                throw new ParsingException();
-            }
-            var secondDateIndex = row.IndexOf(dates[1]);
-            // 2.
-            var endIndex = secondDateIndex - 1;
-
-
-            var startIndex = -1;
-            for (var i = endIndex; i >=0; i--) // backdirected search
-            {
-                var word = row[i].Text;
-                if (word.Any(c => !char.IsDigit(c) && c != '+' && c != ','))
-                {
-                    startIndex = i + 1;
-                    break;
-                }
-            }
-            if (startIndex == -1 || startIndex > endIndex)
-            {
-                throw new ParsingException("Could not fount amount start word");
-            }
-
-            var amountToken = string.Join("", 
-                row.Skip(startIndex).Take(endIndex - startIndex + 1));
-            amountToken = amountToken.Replace(',', '.');
-            if (amountToken.StartsWith('+'))
-            {
-                amountToken = amountToken[1..];
-            }
-            else
-            {
-                amountToken = "-" + amountToken;
-            }
-
-            var description = string.Join(" ", row.Skip(secondDateIndex + 2));
-
-            return new Operation
-            {
-                DateTime = dateTime,
-                Amount = double.Parse(amountToken, CultureInfo.InvariantCulture),
-                Description = description
-            };
-        }
-
-        private static IEnumerable<Word> SplitY(IEnumerable<Word> words)
-        {
-            foreach (var word in words)
-            {
-                // var newWord = new Word();
-                var letters = new List<Letter>();
-                for (var i = 0; i < word.Letters.Count; i++)
-                {
-                    if (i > 0)
-                    {
-                        if (word.Letters[i].Location.Y != word.Letters[i-1].Location.Y)
-                        {
-                            // new word
-                            yield return new Word(letters);
-                            letters.Clear();
-                        }
-                    }
-                    letters.Add(word.Letters[i]);
-                }
-                yield return new Word(letters);
-            }
-        }
-
-        private static IEnumerable<Word> RemoveFooter(IReadOnlyList<Word> words)
-        {
-            for (var i = 0; i < words.Count; i++)
-            {
-                // fixme: detect y position change
-                if (i <= words.Count - 4)
-                {
-                    if (words[i].Text == "Продолжение" &&
-                        words[i+1].Text == "на" &&
-                        words[i+2].Text == "следующей" &&
-                        words[i+3].Text == "странице")
-                    {
-                        yield break;
-                    }
-
-                    if (words[i].Text == "Реквизиты" &&
-                        words[i+1].Text == "для" &&
-                        words[i+2].Text == "перевода" &&
-                        words[i+3].Text == "на")
-                    {
-                        yield break;
-                    }
-                    // todo: support other
-                }
-                yield return words[i];
-            }
         }
     }
 }
