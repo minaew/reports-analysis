@@ -16,5 +16,10 @@ namespace PdfExtractor
         {
             return DateTime.ToString();
         }
+
+        public string Serialize()
+        {
+            return $"{DateTime}\t{Amount}\t{Description}";
+        }
     }
 }
