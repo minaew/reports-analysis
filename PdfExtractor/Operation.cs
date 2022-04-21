@@ -10,6 +10,8 @@ namespace PdfExtractor
 
         public double Amount { get; set; } // TODO: type
 
+        public string Category { get; set; }
+
         public string Description { get; set; }
 
         public override string ToString()
