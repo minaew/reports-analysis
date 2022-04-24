@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using UglyToad.PdfPig;
@@ -78,7 +79,7 @@ namespace PdfExtractor
                         operations.Add(new Operation
                         {
                             DateTime = dateTime,
-                            Amount = double.Parse(amountToken),
+                            Amount = double.Parse(amountToken, NumberStyles.Float, CultureInfo.InvariantCulture),
                             Description = description
                         });
                     }

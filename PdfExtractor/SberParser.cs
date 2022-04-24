@@ -95,7 +95,7 @@ namespace PdfExtractor
                         {
                             throw new ParsingException("Empty amount token");
                         }
-                        if (!double.TryParse(amountToken, out double amount))
+                        if (!double.TryParse(amountToken, NumberStyles.Float, CultureInfo.InvariantCulture, out double amount))
                         {
                             continue;
                         }
