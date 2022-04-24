@@ -4,18 +4,10 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using UglyToad.PdfPig;
+using PdfExtractor.Models;
 
-namespace PdfExtractor
+namespace PdfExtractor.Parsers
 {
-    internal struct OpenRect
-    {
-        public double Left { get; set; }
-
-        public double Top { get; set; }
-
-        public double Right { get; set; }
-    }
-
     public class SberVkladParser : IParser
     {
         private readonly Regex _dateRegex = new(@"\d{2}\.\d{2}\.\d{4}", RegexOptions.Compiled);

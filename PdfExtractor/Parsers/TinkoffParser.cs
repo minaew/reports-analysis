@@ -4,8 +4,9 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using UglyToad.PdfPig;
+using PdfExtractor.Models;
 
-namespace PdfExtractor
+namespace PdfExtractor.Parsers
 {
     public class TinkoffParser : IParser
     {
@@ -88,61 +89,5 @@ namespace PdfExtractor
 
             return operations;
         }
-
-        /*
-        private IEnumerable<string> GetRows(string documentPath)
-        {
-            using (var document = PdfDocument.Open(documentPath))
-            {
-                for (var p = 0; p < document.NumberOfPages - 1; p++)
-                {
-                    var page = document.GetPage(p+1);
-                    // Console.WriteLine("NEW PAGE");
-                    string pageText = page.Text;
-                    
-                    var index = pageText.IndexOf(Header);
-                    if (index == -1)
-                    {
-                        throw new ParsingException();
-                    }
-
-                    var tableStartIndex = index + Header.Length;
-                    pageText = pageText[tableStartIndex..];
-
-                    var matches = _dateRegex.Matches(pageText);
-                    for (var i = 0; i < matches.Count-2; i+=2)
-                    {
-                        yield return pageText[matches[i].Index..matches[i + 2].Index];
-                    }
-                    yield return pageText[matches[^2].Index..];
-                }
-            }
-        }
-    
-        private Operation ParseRow(string row)
-        {
-            Console.WriteLine(row);
-            var m = _dateRegex.Matches(row)[1];
-
-            // two formats are supported
-            if (!DateTime.TryParseExact(row[..15], "dd.MM.yy  HH:mm", null, DateTimeStyles.None, out DateTime dateTime))
-            {
-                dateTime = DateTime.ParseExact(row[..8], "dd.MM.yy", null);
-            }
-
-            var index = row.LastIndexOf('₽');
-            var index2 = row.LastIndexOfAny(new [] {'₽', '$', '£'}, index-1); // на самом деле нужно искать не пробел, цифру, точку
-            var amountToken = row.Substring(index2 + 1, index - index2 - 1).Replace(" ", "");
-
-            var description = row[(index + 1)..];
-
-            return new Operation
-            {
-                DateTime = dateTime,
-                Amount = amountToken[0] == '+' ? double.Parse(amountToken, CultureInfo.InvariantCulture) : -double.Parse(amountToken, CultureInfo.InvariantCulture),
-                Description = description
-            };
-        }
-        */
     }
 }

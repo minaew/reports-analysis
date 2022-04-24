@@ -4,18 +4,10 @@ using System.IO;
 using System.Linq;
 using UglyToad.PdfPig;
 using UglyToad.PdfPig.Content;
+using PdfExtractor.Models;
 
 namespace PdfExtractor
 {
-    public enum Format
-    {
-        RawText,
-        Sber,
-        SberVklad,
-        Tinkoff
-    }
-
-
     public class FormatDetector
     {
         public Format GetFormat(string path)
@@ -56,7 +48,7 @@ namespace PdfExtractor
                     break;
             }            
 
-            throw new InvalidOperationException();
+            throw new InvalidOperationException(path);
         }
 
         private static bool ContainsSequencial(IReadOnlyList<Word> words, params string[] sequence)

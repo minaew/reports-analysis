@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using PdfExtractor.Models;
 
-namespace PdfExtractor
+namespace PdfExtractor.Parsers
 {
     public class ManualParser : IParser
     {

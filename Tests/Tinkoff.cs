@@ -2,7 +2,8 @@ using System;
 using System.IO;
 using System.Linq;
 using Xunit;
-using PdfExtractor;
+using PdfExtractor.Parsers;
+using PdfExtractor.Models;
 
 namespace Tests
 {

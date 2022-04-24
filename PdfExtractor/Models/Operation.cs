@@ -1,6 +1,6 @@
 using System;
 
-namespace PdfExtractor
+namespace PdfExtractor.Models
 {
     public struct Operation
     {

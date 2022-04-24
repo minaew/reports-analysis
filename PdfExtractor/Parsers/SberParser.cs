@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using UglyToad.PdfPig;
+using PdfExtractor.Models;
 
-namespace PdfExtractor
+namespace PdfExtractor.Parsers
 {
     public class SberParser : IParser
     {

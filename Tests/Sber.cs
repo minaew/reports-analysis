@@ -2,6 +2,8 @@ using System;
 using System.Linq;
 using PdfExtractor;
 using Xunit;
+using PdfExtractor.Parsers;
+using PdfExtractor.Models;
 
 namespace Tests
 {

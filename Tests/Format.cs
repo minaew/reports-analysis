@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using PdfExtractor;
+using PdfExtractor.Models;
 using Xunit;
 
 namespace Tests
