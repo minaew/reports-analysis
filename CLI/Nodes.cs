@@ -3,28 +3,28 @@ using PdfExtractor.Models;
 
 namespace CLI
 {
-    internal class Root
+    public class Root
     {
-        public IDictionary<int, Year> Years { get; } = new Dictionary<int, Year>();
+        public IDictionary<int, Year> Years { get; set; } = new Dictionary<int, Year>();
     }
 
-    internal class Year
+    public class Year
     {
-        public IDictionary<int, Month> Months { get; } = new Dictionary<int, Month>();
+        public IDictionary<int, Month> Months { get; set; } = new Dictionary<int, Month>();
     }
 
-    internal class Month
+    public class Month
     {
-        public IDictionary<string, Category> Categories { get; } = new Dictionary<string, Category>();
+        public IDictionary<string, Category> Categories { get; set; } = new Dictionary<string, Category>();
 
     }
 
-    internal class Category
+    public class Category
     {
         public int Count => Operations.Count;
 
 
         // [JsonIgnore]
-        public ICollection<Operation> Operations { get; } = new List<Operation>();
+        public ICollection<Operation> Operations { get; set; } = new List<Operation>();
     }
 }
