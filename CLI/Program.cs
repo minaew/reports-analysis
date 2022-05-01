@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 using PdfExtractor;
 using PdfExtractor.Models;
 using PdfExtractor.Parsers;
@@ -45,6 +46,10 @@ namespace CLI
                     {
                         Console.WriteLine(operation.Serialize());
                     }
+                    break;
+
+                case "--tree":
+                    Tree(operations);
                     break;
             }
         }
@@ -113,6 +118,40 @@ namespace CLI
 
                 yield return newOperation;
             }
+        }
+    
+        private static void Tree(IEnumerable<Operation> operations)
+        {
+            var tree = new Root();
+            foreach (var operation in operations)
+            {
+                var yearKey = operation.DateTime.Year;
+                if (!tree.Years.ContainsKey(yearKey))
+                {
+                    tree.Years[yearKey] = new Year();
+                }
+                var year = tree.Years[yearKey];
+
+                var monthKey = operation.DateTime.Month;
+                if (!year.Months.ContainsKey(monthKey))
+                {
+                    year.Months[monthKey] = new Month();
+                }
+                var month = year.Months[monthKey];
+
+                var categoryKey = operation.Category;
+                if (!month.Categories.ContainsKey(categoryKey))
+                {
+                    month.Categories[categoryKey] = new Category();
+                }
+                var category = month.Categories[categoryKey];
+                category.Operations.Add(operation);
+            }
+
+            Console.WriteLine(JsonSerializer.Serialize(tree, new JsonSerializerOptions
+            {
+                WriteIndented = true
+            }));
         }
     }
 }

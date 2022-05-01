@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using PdfExtractor.Models;
 
@@ -25,13 +26,13 @@ namespace PdfExtractor
             foreach (var category in _tree ?? new Dictionary<string, ICollection<string>>())
             {
                 // extend here
-                if (category.Value.Contains(operation.Description))
+                if (category.Value.Any(v => operation.Description.Contains(v)))
                 {
                     return category.Key;
                 }
             }
 
-            return string.Empty;
+            return "n/a";
         }
     }
 }
