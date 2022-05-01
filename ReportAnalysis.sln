@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PdfExtractor", "PdfExtracto
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{F9D2F092-C805-47E5-A430-E63C8797B90A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CLI", "CLI\CLI.csproj", "{89B9F274-DB47-4A47-8246-2DD44651E140}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{F9D2F092-C805-47E5-A430-E63C8797B90A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F9D2F092-C805-47E5-A430-E63C8797B90A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F9D2F092-C805-47E5-A430-E63C8797B90A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89B9F274-DB47-4A47-8246-2DD44651E140}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89B9F274-DB47-4A47-8246-2DD44651E140}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89B9F274-DB47-4A47-8246-2DD44651E140}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89B9F274-DB47-4A47-8246-2DD44651E140}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

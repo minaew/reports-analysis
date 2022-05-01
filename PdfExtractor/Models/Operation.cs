@@ -21,7 +21,8 @@ namespace PdfExtractor.Models
 
         public string Serialize()
         {
-            return $"{DateTime}\t{Amount}\t{Description}";
+            var dateTime = DateTime.ToString("dd.MM.yyyy HH:mm");
+            return $"{dateTime}\t{Amount}\t{Description}";
         }
     }
 }

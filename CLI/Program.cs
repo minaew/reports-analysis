@@ -2,13 +2,26 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using PdfExtractor;
 using PdfExtractor.Models;
 using PdfExtractor.Parsers;
 
-namespace PdfExtractor
+namespace CLI
 {
     class Program
     {
+        // TODO: find operations by description
+        // TODO: operations in tree:
+        // - income
+        // -- categoryA
+        // --- operation1
+        // --- ...
+        // -- categoryB
+        // --- ...
+        // - outcome
+        // -- categoryA
+        // -- categoryC
+        // -- ...
         static void Main(string[] args)
         {
             string path = args[0];
@@ -18,12 +31,20 @@ namespace PdfExtractor
 
             switch (args[2])
             {
-                case "top":
+                case "--top":
                     Top(operations);
                     break;
 
-                case "monthly":
+                case "--monthly":
                     Monthly(operations);
+                    break;
+
+                case "--find":
+                    var request = args[3].Trim('\"');
+                    foreach (var operation in operations.Where(o => o.Description == request))
+                    {
+                        Console.WriteLine(operation.Serialize());
+                    }
                     break;
             }
         }
@@ -48,14 +69,17 @@ namespace PdfExtractor
             foreach (var month in operations.GroupBy(o => Tuple.Create(o.DateTime.Year, o.DateTime.Month))
                                             .OrderBy(p => p.Key))
             {
-                var outcome = month.Where(o => o.Account != "internal").Select(m => m.Amount).Where(a => a < 0).Sum();
-                var income = month.Where(o => o.Account != "internal").Select(m => m.Amount).Where(a => a > 0).Sum();
+                var outcomeOperations = month.Where(o => o.Category != "internal").Where(o => o.Amount < 0);
+                var incomeOperations = month.Where(o => o.Category != "internal").Where(o => o.Amount > 0);
+                
+                var outcome = outcomeOperations.Select(m => m.Amount).Sum();
+                var income = incomeOperations.Select(m => m.Amount).Sum();
 
                 Console.WriteLine($"{month.Key}\t{income}\t{outcome}");
-                foreach (var outcomeOperation in month.Where(o => o.Amount < 0))
-                {
-                    Console.WriteLine($"{outcomeOperation.Account}\t{outcomeOperation.Amount}\t{outcomeOperation.Description}\t{outcomeOperation.Category}");
-                }
+                // foreach (var outcomeOperation in outcomeOperations)
+                // {
+                //     Console.WriteLine($"{outcomeOperation.Account}\t{outcomeOperation.Amount}\t{outcomeOperation.Description}\t{outcomeOperation.Category}");
+                // }
             }
         }
 
