@@ -6,6 +6,8 @@ namespace Viewer
     internal class TreeNode
     {
         public int ID { get; set; }
+
+        public int Money { get; set; }
         
         public string Title { get; set; } = string.Empty;
 

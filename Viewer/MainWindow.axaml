@@ -10,8 +10,12 @@
             <TreeView Items="{Binding Tree}">
                 <TreeView.ItemTemplate>
                     <TreeDataTemplate DataType="{x:Type local:TreeNode}"
-                                    ItemsSource="{Binding SubCollection}">
-                        <TextBlock Text="{Binding Title}"/>
+                                      ItemsSource="{Binding SubCollection}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Money}"/>
+                            <TextBlock Text="{Binding Title}"
+                                       Margin="10 0 0 0"/>
+                        </StackPanel>
                     </TreeDataTemplate>
                 </TreeView.ItemTemplate>
             </TreeView>

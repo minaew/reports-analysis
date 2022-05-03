@@ -66,8 +66,10 @@ namespace Viewer
 
                 category.SubCollection.Add(new TreeNode
                 {
-                    Title = operation.Description
+                    Title = $"{operation.DateTime} -- {operation.Account} -- {operation.Description}",
+                    Money = (int)operation.Amount
                 });
+                category.Money += (int)operation.Amount;
             }
 
             return years;
