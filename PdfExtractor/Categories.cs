@@ -26,7 +26,7 @@ namespace PdfExtractor
             foreach (var category in _tree ?? new Dictionary<string, ICollection<string>>())
             {
                 // extend here
-                if (category.Value.Any(v => operation.Description.Contains(v)))
+                if (category.Value.Any(v => operation.Description.Contains(v, StringComparison.InvariantCultureIgnoreCase)))
                 {
                     return category.Key;
                 }

@@ -5,7 +5,7 @@
         xmlns:local="clr-namespace:Viewer"
         mc:Ignorable="d"
         x:Class="Viewer.MainWindow">
-    <TabControl>
+    <TabControl SelectedIndex="1">
         <TabItem Header="Tree">
             <TreeView Items="{Binding Tree}">
                 <TreeView.ItemTemplate>
@@ -17,9 +17,31 @@
             </TreeView>
         </TabItem>
         <TabItem Header="List">
-            <DataGrid Items="{Binding List}"
-                      AutoGenerateColumns="True">
-            </DataGrid>
+            <Grid RowDefinitions="Auto,*">
+                <StackPanel Orientation="Horizontal"
+                            Grid.Row="0">
+                    <CheckBox Content="n/a only"
+                              IsChecked="{Binding IsNaOnly}"
+                              Margin="10"/>
+                    <TextBlock Text="{Binding Count}"
+                               VerticalAlignment="Center"
+                               Margin="10"/>
+                </StackPanel>
+
+                <DataGrid Items="{Binding List}"
+                          Grid.Row="1">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="DateTime"
+                                            Binding="{Binding DateTime, StringFormat={}{0:dd.MM.yyyy}}"/>
+                        <DataGridTextColumn Header="Amount"
+                                            Binding="{Binding Amount}"/>
+                        <DataGridTextColumn Header="Category"
+                                            Binding="{Binding Category}"/>
+                        <DataGridTextColumn Header="Description"
+                                            Binding="{Binding Description}"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
         </TabItem>
     </TabControl>
 </Window>
