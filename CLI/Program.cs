@@ -11,18 +11,6 @@ namespace CLI
 {
     class Program
     {
-        // TODO: find operations by description
-        // TODO: operations in tree:
-        // - income
-        // -- categoryA
-        // --- operation1
-        // --- ...
-        // -- categoryB
-        // --- ...
-        // - outcome
-        // -- categoryA
-        // -- categoryC
-        // -- ...
         static void Main(string[] args)
         {
             string path = args[0];
@@ -50,6 +38,13 @@ namespace CLI
 
                 case "--tree":
                     Tree(operations);
+                    break;
+
+                case "--list":
+                    Console.WriteLine(JsonSerializer.Serialize(operations, new JsonSerializerOptions
+                    {
+                        WriteIndented = true
+                    }));
                     break;
             }
         }

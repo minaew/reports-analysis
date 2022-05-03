@@ -15,7 +15,10 @@ namespace Viewer
         {
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                desktop.MainWindow = new MainWindow();
+                desktop.MainWindow = new MainWindow
+                {
+                    DataContext = new MainViewModel()
+                };
             }
 
             base.OnFrameworkInitializationCompleted();

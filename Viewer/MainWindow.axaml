@@ -5,12 +5,21 @@
         xmlns:local="clr-namespace:Viewer"
         mc:Ignorable="d"
         x:Class="Viewer.MainWindow">
-    <TreeView Name="Tree">
-        <TreeView.ItemTemplate>
-            <TreeDataTemplate DataType="{x:Type local:TreeNode}"
-                              ItemsSource="{Binding SubCollection}">
-                <TextBlock Text="{Binding Title}"/>
-            </TreeDataTemplate>
-        </TreeView.ItemTemplate>
-    </TreeView>
+    <TabControl>
+        <TabItem Header="Tree">
+            <TreeView Items="{Binding Tree}">
+                <TreeView.ItemTemplate>
+                    <TreeDataTemplate DataType="{x:Type local:TreeNode}"
+                                    ItemsSource="{Binding SubCollection}">
+                        <TextBlock Text="{Binding Title}"/>
+                    </TreeDataTemplate>
+                </TreeView.ItemTemplate>
+            </TreeView>
+        </TabItem>
+        <TabItem Header="List">
+            <DataGrid Items="{Binding List}"
+                      AutoGenerateColumns="True">
+            </DataGrid>
+        </TabItem>
+    </TabControl>
 </Window>
