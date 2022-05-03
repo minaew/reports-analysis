@@ -51,11 +51,11 @@ namespace PdfExtractor.Parsers
                 return false;
             }
 
-            var amountToken = line[(datetimeFormat.Length + 1)..].Split(' ')[0];
+            var amountToken = line[(datetimeFormat.Length + 1)..].Split(' ')[0].Replace(',', '.');
             operation = new Operation
             {
                 DateTime = dateTime,
-                Amount = double.Parse(amountToken),
+                Amount = double.Parse(amountToken, NumberStyles.Float, CultureInfo.InvariantCulture),
                 Description = line[(datetimeFormat.Length + amountToken.Length + 2)..]
             };
             return true;
