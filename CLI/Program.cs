@@ -36,15 +36,10 @@ namespace CLI
                     }
                     break;
 
-                case "--tree":
-                    Tree(operations);
-                    break;
-
                 case "--list":
-                    Console.WriteLine(JsonSerializer.Serialize(operations, new JsonSerializerOptions
-                    {
-                        WriteIndented = true
-                    }));
+                    var options = new JsonSerializerOptions { WriteIndented = true };
+                    var content = JsonSerializer.Serialize(operations.OrderBy(o => o.DateTime), options);
+                    Console.WriteLine(content);
                     break;
             }
         }
@@ -76,10 +71,6 @@ namespace CLI
                 var income = incomeOperations.Select(m => m.Amount).Sum();
 
                 Console.WriteLine($"{month.Key}\t{income}\t{outcome}");
-                // foreach (var outcomeOperation in outcomeOperations)
-                // {
-                //     Console.WriteLine($"{outcomeOperation.Account}\t{outcomeOperation.Amount}\t{outcomeOperation.Description}\t{outcomeOperation.Category}");
-                // }
             }
         }
 
@@ -113,40 +104,6 @@ namespace CLI
 
                 yield return newOperation;
             }
-        }
-    
-        private static void Tree(IEnumerable<Operation> operations)
-        {
-            var tree = new Root();
-            foreach (var operation in operations)
-            {
-                var yearKey = operation.DateTime.Year;
-                if (!tree.Years.ContainsKey(yearKey))
-                {
-                    tree.Years[yearKey] = new Year();
-                }
-                var year = tree.Years[yearKey];
-
-                var monthKey = operation.DateTime.Month;
-                if (!year.Months.ContainsKey(monthKey))
-                {
-                    year.Months[monthKey] = new Month();
-                }
-                var month = year.Months[monthKey];
-
-                var categoryKey = operation.Category;
-                if (!month.Categories.ContainsKey(categoryKey))
-                {
-                    month.Categories[categoryKey] = new Category();
-                }
-                var category = month.Categories[categoryKey];
-                category.Operations.Add(operation);
-            }
-
-            Console.WriteLine(JsonSerializer.Serialize(tree, new JsonSerializerOptions
-            {
-                WriteIndented = true
-            }));
         }
     }
 }

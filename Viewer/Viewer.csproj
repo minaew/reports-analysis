@@ -23,6 +23,6 @@
 	<PackageReference Include="XamlNameReferenceGenerator" Version="1.3.4" />
    </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CLI\CLI.csproj" />
+    <ProjectReference Include="..\PdfExtractor\PdfExtractor.csproj" />
   </ItemGroup>
 </Project>

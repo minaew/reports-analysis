@@ -15,9 +15,11 @@ namespace Viewer
         {
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
+                var path = desktop.Args[0];
+                var model = new MainModel(path);
                 desktop.MainWindow = new MainWindow
                 {
-                    DataContext = new MainViewModel()
+                    DataContext = new MainViewModel(model)
                 };
             }
 

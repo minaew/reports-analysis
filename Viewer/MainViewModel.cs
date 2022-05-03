@@ -1,52 +1,24 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.IO;
-using System.Linq;
-using System.Text.Json;
-using CLI; // fixme
 using PdfExtractor.Models;
 
 namespace Viewer
 {
     internal class MainViewModel : INotifyPropertyChanged
     {
+        private readonly MainModel _model;
         private bool _isNaOnly;
-        public int _count;
+        private int _count;
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        public MainViewModel()
+        public MainViewModel(MainModel model)
         {
-            var text = File.ReadAllText("tree.json");
-            var root = JsonSerializer.Deserialize<Root>(text, new JsonSerializerOptions
-            {
-                WriteIndented = true,
-            });
-            if (root != null)
-            {
-                foreach (var year in root.Years.Select(year => new TreeNode
-                {
-                    Title = year.Key.ToString(),
-                    SubCollection = year.Value.Months.Select(month => new TreeNode
-                    {
-                        Title = month.Key.ToString(),
-                        SubCollection = month.Value.Categories.Select(category => new TreeNode
-                        {
-                            Title = category.Key,
-                            SubCollection = category.Value.Operations.Select(operation => new TreeNode
-                            {
-                                Title = operation.Description
-                            }).ToList()
-                        }).ToList()
-                    }).ToList()
-                }))
-                {
-                    Tree.Add(year);
-                }
-            }
+            _model = model;
 
             UpdateOperationList();
+            UpdateOperationTree();
         }
 
         public ICollection<TreeNode> Tree { get; } = new ObservableCollection<TreeNode>();
@@ -81,27 +53,31 @@ namespace Viewer
 
         private void UpdateOperationList()
         {
-            var text = File.ReadAllText("list.json") ;
-            var list = JsonSerializer.Deserialize<Operation[]>(text);
-            if (list != null)
+            List.Clear();
+            foreach (var operation in _model.GetOperationList())
             {
-                List.Clear();
-                foreach (var operation in list)
+                if (IsNaOnly)
                 {
-                    if (IsNaOnly)
-                    {
-                        if (operation.Category == "n/a")
-                        {
-                            List.Add(operation);
-                        }
-                    }
-                    else
+                    if (operation.Category == "n/a")
                     {
                         List.Add(operation);
                     }
                 }
+                else
+                {
+                    List.Add(operation);
+                }
+            }
 
-                Count = List.Count;
+            Count = List.Count;
+        }
+
+        private void UpdateOperationTree()
+        {
+            Tree.Clear();
+            foreach (var node in _model.GetOperationTree())
+            {
+                Tree.Add(node);
             }
         }
     }
