@@ -15,10 +15,11 @@ namespace CLI
         {
             string path = args[0];
             string categoriesFile = args[1];
-            var categories = new Categories(categoriesFile);
+            string casesFile = args[2];
+            var categories = new Categories(categoriesFile, casesFile);
             var operations = Parse(path, categories);
 
-            switch (args[2])
+            switch (args[3])
             {
                 case "--top":
                     Top(operations);
