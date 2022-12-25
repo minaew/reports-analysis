@@ -14,13 +14,8 @@ namespace PdfExtractor.Parsers
     public class DenizParser : IParser
     {
         private const string Account = "deniz-maha";
-        
-        public IReadOnlyList<Operation> Parse(string path)
-        {
-            return ParseCore(path).ToList();
-        }
-        
-        private static IEnumerable<Operation> ParseCore(string path)
+
+        public IEnumerable<Operation> Parse(string path)
         {
             using var doc = SpreadsheetDocument.Open(path, false);
 
@@ -48,7 +43,7 @@ namespace PdfExtractor.Parsers
                         Account = Account,
                         Amount = new Money
                         {
-                            Currency = "try",
+                            Currency = "TRY",
                             Value = amount
                         },
                         Description = details

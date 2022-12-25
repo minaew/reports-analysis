@@ -18,6 +18,9 @@ namespace PdfExtractor
                 
                 case ".xlsx":
                     return Format.Deniz;
+                
+                case ".json":
+                    return Format.ExpencesApp;
 
                 case ".pdf":
                     using (var document = PdfDocument.Open(path))

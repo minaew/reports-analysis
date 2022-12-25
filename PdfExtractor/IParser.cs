@@ -5,6 +5,6 @@ namespace PdfExtractor
 {
     public interface IParser
     {
-        IReadOnlyList<Operation> Parse(string path);
+        IEnumerable<Operation> Parse(string path);
     }
 }

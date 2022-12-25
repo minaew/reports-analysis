@@ -17,80 +17,74 @@ namespace PdfExtractor.Parsers
         private const double AmountRight = 270;
         private const double DescriptionLeft = 300;
 
-        public IReadOnlyList<Operation> Parse(string path)
+        public IEnumerable<Operation> Parse(string path)
         {
-            var operations = new List<Operation>();
-
-            using (var document = PdfDocument.Open(path))
+            using var document = PdfDocument.Open(path);
+            foreach (var page in document.GetPages())
             {
-                foreach (var page in document.GetPages())
+                var words = page.GetWords().ToList();
+                var dateTimeTitle = PdfHelper.GetRect(words, "Дата", "и", "время");
+                if (dateTimeTitle == null) continue;
+
+                var dates = words.Where(w => w.BoundingBox.Top < dateTimeTitle.Value.Top &&
+                                             w.BoundingBox.Left >= dateTimeTitle.Value.Left &&
+                                             w.BoundingBox.Right <= dateTimeTitle.Value.Right)
+                    .ToList();
+
+                var dateStrs = PdfHelper.GetLines(dates).ToList();
+
+
+                foreach (var d in dateStrs)
                 {
-                    var words = page.GetWords().ToList();
-                    var dateTimeTitle = PdfHelper.GetRect(words, "Дата", "и", "время");
-                    if (dateTimeTitle == null) continue;
-
-                    var dates = words.Where(w => w.BoundingBox.Top < dateTimeTitle.Value.Top &&
-                                                 w.BoundingBox.Left >= dateTimeTitle.Value.Left &&
-                                                 w.BoundingBox.Right <= dateTimeTitle.Value.Right)
-                                     .ToList();
-
-                    var dateStrs = PdfHelper.GetLines(dates).ToList();
-
-
-                    foreach (var d in dateStrs)
+                    var token = d.Item2;
+                    DateTime dateTime;
+                    if (_dateTimeRegex.IsMatch(d.Item2))
                     {
-                        var token = d.Item2;
-                        DateTime dateTime;
-                        if (_dateTimeRegex.IsMatch(d.Item2))
-                        {
-                            dateTime = DateTime.ParseExact(token, "dd.MM.yy HH:mm", null);
-                        }
-                        else
-                        {
-                            if (_dateRegex.IsMatch(d.Item2))
-                            {
-                                dateTime = DateTime.ParseExact(token, "dd.MM.yy", null);
-                            }
-                            else
-                            {
-                                continue;
-                            }
-                        }
-
-                        var same = words.Where(o => o.BoundingBox.Top >= d.Item1 &&
-                                                    o.BoundingBox.Bottom <= d.Item1)
-                                        .ToList();
-
-                        var amountWords = same.Where(o => o.BoundingBox.Left > AmountLeft &&
-                                                          o.BoundingBox.Right < AmountRight)
-                                              .ToList();
-                        var amountToken = string.Join("", amountWords.Select(o => o.Text));
-                        if (amountToken.StartsWith('+'))
-                        {
-                            amountToken = amountToken[1..];
-                        }
-                        else
-                        {
-                            amountToken = "-" + amountToken;
-                        }
-
-                        var descriptionWords = same.Where(o => o.BoundingBox.Left >= DescriptionLeft);
-                        var description = string.Join(" ", descriptionWords.Select(d => d.Text));
-
-                        operations.Add(new Operation
-                        {
-                            DateTime = dateTime,
-                            Amount = new Money
-                            {
-                                Value = double.Parse(amountToken, NumberStyles.Float, CultureInfo.InvariantCulture)
-                            },
-                            Description = description
-                        });
+                        dateTime = DateTime.ParseExact(token, "dd.MM.yy HH:mm", null);
                     }
+                    else
+                    {
+                        if (_dateRegex.IsMatch(d.Item2))
+                        {
+                            dateTime = DateTime.ParseExact(token, "dd.MM.yy", null);
+                        }
+                        else
+                        {
+                            continue;
+                        }
+                    }
+
+                    var same = words.Where(o => o.BoundingBox.Top >= d.Item1 &&
+                                                o.BoundingBox.Bottom <= d.Item1)
+                        .ToList();
+
+                    var amountWords = same.Where(o => o.BoundingBox.Left > AmountLeft &&
+                                                      o.BoundingBox.Right < AmountRight)
+                        .ToList();
+                    var amountToken = string.Join("", amountWords.Select(o => o.Text));
+                    if (amountToken.StartsWith('+'))
+                    {
+                        amountToken = amountToken[1..];
+                    }
+                    else
+                    {
+                        amountToken = "-" + amountToken;
+                    }
+
+                    var descriptionWords = same.Where(o => o.BoundingBox.Left >= DescriptionLeft);
+                    var description = string.Join(" ", descriptionWords.Select(d => d.Text));
+
+                    yield return new Operation
+                    {
+                        DateTime = dateTime,
+                        Amount = new Money
+                        {
+                            Value = double.Parse(amountToken, NumberStyles.Float, CultureInfo.InvariantCulture)
+                        },
+                        Description = description
+                    };
                 }
             }
-
-            return operations;
         }
     }
 }

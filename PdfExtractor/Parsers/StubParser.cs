@@ -6,7 +6,7 @@ namespace PdfExtractor.Parsers
 {
     public class StubParser : IParser
     {
-        public IReadOnlyList<Operation> Parse(string path)
+        public IEnumerable<Operation> Parse(string path)
         {
             return Enumerable.Empty<Operation>().ToList();
         }

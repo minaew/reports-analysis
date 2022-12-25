@@ -119,6 +119,7 @@ namespace CLI
                 Format.Tinkoff => new TinkoffParser(),
                 Format.RawText => new ManualParser(),
                 Format.Deniz => new DenizParser(),
+                Format.ExpencesApp => new ExpensesAppParser(),
                 _ => new StubParser(),
             };
 
