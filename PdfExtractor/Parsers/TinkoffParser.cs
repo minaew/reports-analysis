@@ -80,7 +80,10 @@ namespace PdfExtractor.Parsers
                         operations.Add(new Operation
                         {
                             DateTime = dateTime,
-                            Amount = double.Parse(amountToken, NumberStyles.Float, CultureInfo.InvariantCulture),
+                            Amount = new Money
+                            {
+                                Value = double.Parse(amountToken, NumberStyles.Float, CultureInfo.InvariantCulture)
+                            },
                             Description = description
                         });
                     }

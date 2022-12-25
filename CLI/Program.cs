@@ -11,15 +11,37 @@ namespace CLI
 {
     class Program
     {
-        static void Main(string[] args)
+        static int Main(string[] args)
         {
-            string path = args[0];
-            string categoriesFile = args[1];
-            string casesFile = args[2];
-            var categories = new Categories(categoriesFile, casesFile);
+            var outStream = Console.Out;
+            if (args.LastOrDefault()?.StartsWith(">") ?? false)
+            {
+                outStream = new StreamWriter(args.Last().TrimStart('>'));
+                args = args.Take(args.Length - 1).ToArray();
+            }
+            if (args.Length < 1)
+            {
+                Console.WriteLine("path [categories-file] [cases-file]");
+                return -1;
+            }
+
+            var path = args[0];
+            var categoriesFile = args.Length > 1 ? args[1] : string.Empty;
+            var casesFile = args.Length > 2 ? args[2] : string.Empty;
+            ICategories categories;
+            if (string.IsNullOrEmpty(categoriesFile) || string.IsNullOrEmpty(casesFile))
+            {
+                categories = new EmptyCategories();
+            }
+            else
+            {
+                categories = new Categories(categoriesFile, casesFile);
+            }
+
             var operations = Parse(path, categories);
 
-            switch (args[3])
+            var mode = "--list";
+            switch (mode)
             {
                 case "--top":
                     Top(operations);
@@ -33,16 +55,19 @@ namespace CLI
                     var request = args[3].Trim('\"');
                     foreach (var operation in operations.Where(o => o.Description == request))
                     {
-                        Console.WriteLine(operation.Serialize());
+                        outStream.WriteLine(operation.Serialize());
                     }
                     break;
 
                 case "--list":
                     var options = new JsonSerializerOptions { WriteIndented = true };
                     var content = JsonSerializer.Serialize(operations.OrderBy(o => o.DateTime), options);
-                    Console.WriteLine(content);
+                    outStream.WriteLine(content);
                     break;
             }
+            
+            outStream.Dispose();
+            return 0;
         }
 
         private static void Top(IEnumerable<Operation> operations)
@@ -65,17 +90,17 @@ namespace CLI
             foreach (var month in operations.GroupBy(o => Tuple.Create(o.DateTime.Year, o.DateTime.Month))
                                             .OrderBy(p => p.Key))
             {
-                var outcomeOperations = month.Where(o => o.Category != "internal").Where(o => o.Amount < 0);
-                var incomeOperations = month.Where(o => o.Category != "internal").Where(o => o.Amount > 0);
-                
-                var outcome = outcomeOperations.Select(m => m.Amount).Sum();
-                var income = incomeOperations.Select(m => m.Amount).Sum();
+                var outcomeOperations = month.Where(o => o.Category != "internal").Where(o => o.Amount.Value < 0);
+                var incomeOperations = month.Where(o => o.Category != "internal").Where(o => o.Amount.Value > 0);
+
+                var outcome = outcomeOperations.Select(m => m.Amount.Value).Sum();
+                var income = incomeOperations.Select(m => m.Amount.Value).Sum();
 
                 Console.WriteLine($"{month.Key}\t{income}\t{outcome}");
             }
         }
 
-        private static IEnumerable<Operation> Parse(string path, Categories categories)
+        private static IEnumerable<Operation> Parse(string path, ICategories categories)
         {
             if (new DirectoryInfo(path).Exists)
             {
@@ -93,7 +118,8 @@ namespace CLI
                 Format.SberVklad => new SberVkladParser(),
                 Format.Tinkoff => new TinkoffParser(),
                 Format.RawText => new ManualParser(),
-                _ => throw new ArgumentException("unknown file format"),
+                Format.Deniz => new DenizParser(),
+                _ => new StubParser(),
             };
 
             foreach (var operation in parser.Parse(path))

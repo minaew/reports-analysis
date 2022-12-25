@@ -36,13 +36,17 @@
                           Grid.Row="1">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="DateTime"
-                                            Binding="{Binding DateTime, StringFormat={}{0:dd.MM.yyyy}}"/>
-                        <DataGridTextColumn Header="Amount"
-                                            Binding="{Binding Amount}"/>
+                                            Binding="{Binding DateTime, StringFormat={}{0:dd.MM.yyyy HH:MM}}"/>
+                        <DataGridTextColumn Header="Value"
+                                            Binding="{Binding Amount.Value}"/>
+                        <DataGridTextColumn Header="Currency"
+                                            Binding="{Binding Amount.Currency}"/>
                         <DataGridTextColumn Header="Category"
                                             Binding="{Binding Category}"/>
                         <DataGridTextColumn Header="Description"
                                             Binding="{Binding Description}"/>
+                        <DataGridTextColumn Header="Account"
+                                            Binding="{Binding Account}"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </Grid>

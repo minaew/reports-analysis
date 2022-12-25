@@ -1,13 +1,47 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
+using System.Linq;
 using PdfExtractor.Models;
 
 namespace PdfExtractor.Parsers
 {
     public class ManualParser : IParser
     {
+        private const string Separator = "-";
+
+        public IReadOnlyList<Operation> Parse(string path)
+        {
+            return ParseInternal(path).ToList();
+        }
+        
+        private static IEnumerable<Operation> ParseInternal(string path)
+        {
+            using var file = File.OpenText(path);
+            while (true)
+            {
+                var line = file.ReadLine();
+                if (string.IsNullOrEmpty(line))
+                {
+                    yield break;
+                }
+
+                var tokens = line.Split(Separator);
+                if (tokens.Length != 3)
+                {
+                    throw new InvalidOperationException();
+                }
+
+                yield return new Operation
+                {
+                    DateTime = DateTime.ParseExact(tokens[0].Trim(), "dd.MM.yyyy", null),
+                    Amount = Money.FromString(tokens[1].Trim()),
+                    Description = tokens[2].Trim()
+                };
+            }
+        }
+        
+        /*
         public IReadOnlyList<Operation> Parse(string path)
         {
             var operations = new List<Operation>();
@@ -60,5 +94,6 @@ namespace PdfExtractor.Parsers
             };
             return true;
         }
+        */
     }
 }

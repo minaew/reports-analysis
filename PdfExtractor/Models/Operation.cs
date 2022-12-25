@@ -8,7 +8,7 @@ namespace PdfExtractor.Models
 
         public DateTime DateTime { get; set; }
 
-        public double Amount { get; set; } // TODO: type
+        public Money Amount { get; set; } // TODO: type
 
         public string Category { get; set; }
 
@@ -24,5 +24,22 @@ namespace PdfExtractor.Models
             var dateTime = DateTime.ToString("dd.MM.yyyy HH:mm");
             return $"{dateTime}\t{Amount}\t{Description}";
         }
+    }
+
+    public class Money
+    {
+        public static Money FromString(string money)
+        {
+            var tokens = money.Split(" ");
+            return new Money
+            {
+                Value = double.Parse(tokens[0]),
+                Currency = tokens[1]
+            };
+        }
+        
+        public double Value { get; set; }
+        
+        public string Currency { get; set; }
     }
 }

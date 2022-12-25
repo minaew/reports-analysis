@@ -17,8 +17,8 @@ namespace Viewer
 
         public IEnumerable<Operation> GetOperationList()
         {
-            var text = File.ReadAllText(_filePath) ;
-            var operations = JsonSerializer.Deserialize<List<Operation>>(text);
+            using var file = File.OpenRead(_filePath);
+            var operations = JsonSerializer.Deserialize<List<Operation>>(file);
             return operations ?? Enumerable.Empty<Operation>();
         }
 
@@ -67,9 +67,9 @@ namespace Viewer
                 category.SubCollection.Add(new TreeNode
                 {
                     Title = $"{operation.DateTime} -- {operation.Account} -- {operation.Description}",
-                    Money = (int)operation.Amount
+                    Money = (int)operation.Amount.Value
                 });
-                category.Money += (int)operation.Amount;
+                category.Money += (int)operation.Amount.Value;
             }
 
             return years;

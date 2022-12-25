@@ -8,12 +8,17 @@ using PdfExtractor.Models;
 
 namespace PdfExtractor
 {
-    public class Categories
+    public interface ICategories
+    {
+        string GetCategory(Operation operation);
+    }
+    
+    public class Categories : ICategories
     {
         private readonly IDictionary<string, ICollection<string>>? _tree;
         private readonly IDictionary<DateTime, string> _cases;
 
-        public Categories(string filePath, string spesialCasesPath)
+        public Categories(string filePath, string specialCasesPath)
         {
             var content = File.ReadAllText(filePath);
             _tree = JsonSerializer.Deserialize<IDictionary<string, ICollection<string>>>(content);
@@ -22,11 +27,11 @@ namespace PdfExtractor
                 throw new ArgumentException("invalid categories file content", filePath);
             }
 
-            content = File.ReadAllText(spesialCasesPath);
+            content = File.ReadAllText(specialCasesPath);
             var pairs = JsonSerializer.Deserialize<ICollection<IDictionary<string, string>>>(content);
             if (pairs == null)
             {
-                throw new ArgumentException("invalid special cases file content", spesialCasesPath);
+                throw new ArgumentException("invalid special cases file content", specialCasesPath);
             }
              _cases = new Dictionary<DateTime, string>(pairs.SelectMany(d => d.Select(p => 
                  new KeyValuePair<DateTime, string>(
@@ -50,6 +55,14 @@ namespace PdfExtractor
                 }
             }
 
+            return "n/a";
+        }
+    }
+
+    public class EmptyCategories : ICategories
+    {
+        public string GetCategory(Operation operation)
+        {
             return "n/a";
         }
     }

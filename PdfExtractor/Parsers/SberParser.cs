@@ -121,7 +121,10 @@ namespace PdfExtractor.Parsers
                     {
                         operations.Add(new Operation
                         {
-                            Amount = amounts[i],
+                            Amount = new Money
+                            {
+                                Value = amounts[i]
+                            },
                             Description = descriptions[i],
                             DateTime = dateTimes[i].Item2
                         });

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -16,6 +15,9 @@ namespace PdfExtractor
             {
                 case ".txt":
                     return Format.RawText;
+                
+                case ".xlsx":
+                    return Format.Deniz;
 
                 case ".pdf":
                     using (var document = PdfDocument.Open(path))
@@ -46,9 +48,9 @@ namespace PdfExtractor
 
                     }
                     break;
-            }            
+            }
 
-            throw new InvalidOperationException(path);
+            return Format.Invalid;
         }
 
         private static bool ContainsSequencial(IReadOnlyList<Word> words, params string[] sequence)

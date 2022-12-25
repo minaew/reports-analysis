@@ -2,9 +2,11 @@ namespace PdfExtractor.Models
 {
     public enum Format
     {
+        Invalid,
         RawText,
         Sber,
         SberVklad,
-        Tinkoff
+        Tinkoff,
+        Deniz
     }
 }
