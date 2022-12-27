@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text.Json;
 using PdfExtractor;
 using PdfExtractor.Models;
@@ -13,60 +14,37 @@ namespace CLI
     {
         static int Main(string[] args)
         {
-            var outStream = Console.Out;
-            if (args.LastOrDefault()?.StartsWith(">") ?? false)
-            {
-                outStream = new StreamWriter(args.Last().TrimStart('>'));
-                args = args.Take(args.Length - 1).ToArray();
-            }
-            if (args.Length < 1)
-            {
-                Console.WriteLine("path [categories-file] [cases-file]");
-                return -1;
-            }
-
-            var path = args[0];
-            var categoriesFile = args.Length > 1 ? args[1] : string.Empty;
-            var casesFile = args.Length > 2 ? args[2] : string.Empty;
             ICategories categories;
-            if (string.IsNullOrEmpty(categoriesFile) || string.IsNullOrEmpty(casesFile))
+            string path;
+            switch (args.Length)
             {
-                categories = new EmptyCategories();
-            }
-            else
-            {
-                categories = new Categories(categoriesFile, casesFile);
+                case 0:
+                    Console.WriteLine(
+                        $"{Assembly.GetExecutingAssembly().GetName().Name} path [categories-file] [cases-file]");
+                    return -1;
+
+                case 1:
+                    path = args[0];
+                    categories = new EmptyCategories();
+                    break;
+
+                case 2:
+                    path = args[0];
+                    categories = new Categories(args[1]);
+                    break;
+
+                default:
+                    path = args[0];
+                    categories = new Categories(args[1], args[2]);
+                    break;
             }
 
             var operations = Parse(path, categories);
 
-            var mode = "--list";
-            switch (mode)
-            {
-                case "--top":
-                    Top(operations);
-                    break;
+            var options = new JsonSerializerOptions {WriteIndented = true};
+            var content = JsonSerializer.Serialize(operations.OrderBy(o => o.DateTime), options);
+            Console.WriteLine(content);
 
-                case "--monthly":
-                    Monthly(operations);
-                    break;
-
-                case "--find":
-                    var request = args[3].Trim('\"');
-                    foreach (var operation in operations.Where(o => o.Description == request))
-                    {
-                        outStream.WriteLine(operation.Serialize());
-                    }
-                    break;
-
-                case "--list":
-                    var options = new JsonSerializerOptions { WriteIndented = true };
-                    var content = JsonSerializer.Serialize(operations.OrderBy(o => o.DateTime), options);
-                    outStream.WriteLine(content);
-                    break;
-            }
-            
-            outStream.Dispose();
             return 0;
         }
 

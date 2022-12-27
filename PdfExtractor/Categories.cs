@@ -16,9 +16,9 @@ namespace PdfExtractor
     public class Categories : ICategories
     {
         private readonly IDictionary<string, ICollection<string>>? _tree;
-        private readonly IDictionary<DateTime, string> _cases;
+        private readonly IDictionary<DateTime, string> _cases = new Dictionary<DateTime, string>();
 
-        public Categories(string filePath, string specialCasesPath)
+        public Categories(string filePath, string specialCasesPath = "")
         {
             var content = File.ReadAllText(filePath);
             _tree = JsonSerializer.Deserialize<IDictionary<string, ICollection<string>>>(content);
@@ -27,16 +27,22 @@ namespace PdfExtractor
                 throw new ArgumentException("invalid categories file content", filePath);
             }
 
+            if (string.IsNullOrEmpty(specialCasesPath))
+            {
+                return;
+            }
+
             content = File.ReadAllText(specialCasesPath);
             var pairs = JsonSerializer.Deserialize<ICollection<IDictionary<string, string>>>(content);
             if (pairs == null)
             {
                 throw new ArgumentException("invalid special cases file content", specialCasesPath);
             }
-             _cases = new Dictionary<DateTime, string>(pairs.SelectMany(d => d.Select(p => 
-                 new KeyValuePair<DateTime, string>(
-                     DateTime.ParseExact(p.Key, "dd.MM.yyyy HH:mm", CultureInfo.InvariantCulture),
-                     p.Value))));
+
+            _cases = new Dictionary<DateTime, string>(pairs.SelectMany(d => d.Select(p =>
+                new KeyValuePair<DateTime, string>(
+                    DateTime.ParseExact(p.Key, "dd.MM.yyyy HH:mm", CultureInfo.InvariantCulture),
+                    p.Value))));
         }
 
         public string GetCategory(Operation operation)
@@ -44,6 +50,11 @@ namespace PdfExtractor
             if (_cases.TryGetValue(operation.DateTime, out string cat))
             {
                 return cat;
+            }
+            
+            if (string.IsNullOrEmpty(operation.Description))
+            {
+                return "n/a";
             }
 
             foreach (var category in _tree ?? new Dictionary<string, ICollection<string>>())
