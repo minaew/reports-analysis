@@ -18,7 +18,11 @@ namespace Tests
             Assert.Contains(new Operation
             {
                 DateTime = new DateTime(2021, 12, 4, 13, 42, 0),
-                Amount = -1269.98,
+                Amount = new Money
+                {
+                    Value = -1269.98,
+                    Currency = "rub"
+                },
                 Description = "Оплата в PYATEROCHKA 21152 Zelenograd RUS"
             }, operations);
         }
@@ -32,7 +36,11 @@ namespace Tests
             Assert.Contains(new Operation
             {
                 DateTime = new DateTime(2021, 12, 16, 22, 57, 0),
-                Amount = 1000,
+                Amount = new Money
+                {
+                    Value = 1000,
+                    Currency = "rub"
+                },
                 Description = "Пополнение. Система быстрых платежей"
             }, operations);
         }
@@ -43,7 +51,7 @@ namespace Tests
             var parser = new TinkoffParser();
             var operations = parser.Parse(Data.LehaDecember);
 
-            Assert.Equal(48, operations.Count);
+            Assert.Equal(48, operations.Count());
         }
 
         [Fact]

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Xunit;
 using PdfExtractor;
 using PdfExtractor.Parsers;
@@ -13,13 +14,17 @@ namespace Tests
         [Fact]
         public void OnlineFirst()
         {
-            var operation = _parser.Parse(Data.PopolnajOnline)[0];
+            var operation = _parser.Parse(Data.PopolnajOnline).First();
 
             Assert.Equal(operation,
                         new Operation
                         {
                             DateTime = new DateTime(2021, 9, 18),
-                            Amount = -500,
+                            Amount = new Money
+                            {
+                                Value = -500,
+                                Currency = "rub"
+                            },
                             Description = "Выдача процентов"
                         });
         }
@@ -27,13 +32,17 @@ namespace Tests
         [Fact]
         public void LastOnPage()
         {
-            var operation = _parser.Parse(Data.PopolnajOnline)[4];
+            var operation = _parser.Parse(Data.PopolnajOnline).ElementAt(4);
 
             Assert.Equal(operation,
                         new Operation
                         {
                             DateTime = new DateTime(2021, 6, 7),
-                            Amount = 61.49,
+                            Amount = new Money
+                            {
+                                Value = 61.49,
+                                Currency = "rub"
+                            },
                             Description = "Пролонгация"
                         });
         }
@@ -41,13 +50,17 @@ namespace Tests
         [Fact]
         public void VeryLast()
         {
-            var operation = _parser.Parse(Data.PopolnajOnline)[^1];
+            var operation = _parser.Parse(Data.PopolnajOnline).ToList()[^1];
 
             Assert.Equal(operation,
                         new Operation
                         {
                             DateTime = new DateTime(2020, 10, 4),
-                            Amount = -600,
+                            Amount = new Money
+                            {
+                                Value = -600,
+                                Currency = "rub"
+                            },
                             Description = "Выдача процентов"
                         });
         }
@@ -55,7 +68,7 @@ namespace Tests
         [Fact]
         public void Count()
         {
-            var count = _parser.Parse(Data.PopolnajOnline).Count;
+            var count = _parser.Parse(Data.PopolnajOnline).Count();
 
             Assert.Equal(15, count);
         }
@@ -63,7 +76,7 @@ namespace Tests
         [Fact]
         public void DollarVklad()
         {
-            var operations = _parser.Parse(Data.DollarVklad);
+            var operations = _parser.Parse(Data.DollarVklad).ToList();
 
             Assert.Equal(4, operations.Count);
 
@@ -71,7 +84,11 @@ namespace Tests
                         new Operation
                         {
                             DateTime = new DateTime(2021, 8, 12),
-                            Amount = 0,
+                            Amount = new Money
+                            {
+                                Value = 0,
+                                Currency = "rub"
+                            },
                             Description = "Капитализация"
                         });
         }
@@ -79,7 +96,7 @@ namespace Tests
         [Fact]
         public void EuroVklad()
         {
-            var operations = _parser.Parse(Data.DollarVklad);
+            var operations = _parser.Parse(Data.DollarVklad).ToList();
 
             Assert.Equal(4, operations.Count);
 
@@ -87,7 +104,11 @@ namespace Tests
                         new Operation
                         {
                             DateTime = new DateTime(2021, 8, 12),
-                            Amount = 0,
+                            Amount = new Money
+                            {
+                                Value = 0,
+                                Currency = "rub"
+                            },
                             Description = "Капитализация"
                         });
         }
