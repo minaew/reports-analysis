@@ -27,7 +27,11 @@ namespace PdfExtractor
                     {
                         // fixme: performance
                         var allWords = document.GetPages().SelectMany(p => p.GetWords()).ToList();
-                         
+
+                        if (allWords[0].Text == "ԱՐԱՐԱՏԲԱՆԿ")
+                        {
+                            return Format.Ararat;
+                        }
                         if (ContainsSequencial(allWords, "ДАТА", "ОПЕРАЦИИ", "НАИМЕНОВАНИЕ", "ОПЕРАЦИИ",
                                                     "ШИФР", "СУММА", "ОПЕРАЦИИ", "ОСТАТОК", "НА", "СЧЁТЕ"))
                         {

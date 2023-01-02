@@ -98,6 +98,7 @@ namespace CLI
                 Format.RawText => new ManualParser(),
                 Format.Deniz => new DenizParser(),
                 Format.ExpencesApp => new ExpensesAppParser(),
+                Format.Ararat => new AraratParser(),
                 _ => new StubParser(),
             };
 

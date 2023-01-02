@@ -8,6 +8,7 @@ namespace PdfExtractor.Models
         SberVklad,
         Tinkoff,
         Deniz,
-        ExpencesApp
+        ExpencesApp,
+        Ararat
     }
 }
