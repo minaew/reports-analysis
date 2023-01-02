@@ -1,8 +1,6 @@
-using Avalonia.Controls;
-
-namespace Viewer
+﻿namespace Viewer.Wpf
 {
-    public partial class MainWindow : Window
+    public partial class MainWindow
     {
         public MainWindow()
         {

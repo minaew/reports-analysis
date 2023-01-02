@@ -19,11 +19,7 @@ namespace Tests
                          new Operation
                          {
                              DateTime = new DateTime(2021, 9, 30, 10, 3, 0),
-                             Amount = new Money
-                             {
-                                 Value = -5.27, 
-                                 Currency = "rub"
-                             },
+                             Amount = new Money(-5.27, "rub"),
                              Description = "KOPILKA KARTA-VKLAD"
                          });
         }
@@ -36,11 +32,7 @@ namespace Tests
                          new Operation
                          {
                              DateTime = new DateTime(2021, 9, 29, 9, 54, 0),
-                             Amount = new Money
-                             {
-                                 Value = 48363.64,
-                                 Currency = "rub"
-                             },
+                             Amount = new Money(48363.64,"rub"),
                              Description = "Аванс по заработной плате"
                          });
         }
@@ -53,11 +45,7 @@ namespace Tests
                          new Operation
                          {
                              DateTime = new DateTime(2021, 9, 23, 10, 13, 0),
-                             Amount = new Money 
-                             {
-                                 Value = -50.45,
-                                 Currency = "rub`"
-                             },
+                             Amount = new Money(-50.45,"rub"),
                              Description = "KOPILKA KARTA-VKLAD"
                          });
         }
@@ -70,13 +58,7 @@ namespace Tests
                          new Operation
                          {
                              DateTime = new DateTime(2020, 10, 1, 1, 23, 0),
-                             Amount = new Money
-                                      {
-                                          Value = -4800,
-                                          Currency = "rub"
-                                      }
-                                 
-                                 ,
+                             Amount = new Money(-4800, "rub"),
                              Description = "SBOL перевод 5469****6838 Ф. ВАДИМ ДМИТРИЕВИЧ"
                          });
         }
@@ -101,11 +83,7 @@ namespace Tests
                          new Operation
                          {
                              DateTime = new DateTime(2021, 9, 27, 9, 32, 0),
-                             Amount = new Money
-                             {
-                                 Value = 215,
-                                 Currency = "rub"
-                             },
+                             Amount = new Money(215, "rub"),
                              Description = "SBOL перевод 4276****8215 М. МАРИЯ МИХАЙЛОВНА"
                          });
         }
@@ -118,12 +96,7 @@ namespace Tests
                          new Operation
                          {
                              DateTime = new DateTime(2021, 9, 20, 9, 36, 0),
-                             Amount = new Money
-                             { 
-                                 Value = 130,
-                                 Currency = "rub"
-                                 
-                             },
+                             Amount = new Money(130, "rub"),
                              Description = "SBOL перевод 4276****8215 М. МАРИЯ МИХАЙЛОВНА"
                          });
         }
@@ -136,11 +109,7 @@ namespace Tests
                          new Operation
                          {
                              DateTime = new DateTime(2020, 10, 4, 10, 43, 0),
-                             Amount = new Money
-                             {
-                                 Currency = "rub",
-                                 Value = 160
-                             },
+                             Amount = new Money(160, "rub"),
                              Description = "SBOL перевод 4276****8215 М. МАРИЯ МИХАЙЛОВНА"
                          });
         }

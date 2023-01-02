@@ -18,11 +18,7 @@ namespace PdfExtractor.Parsers
                 new Operation
                 {
                     Account = movements.label,
-                    Amount = new Money
-                    {
-                        Currency = movements.currency,
-                        Value = t.amount
-                    },
+                    Amount = new Money(t.amount, movements.currency),
                     DateTime = t.date,
                     Description = t.payee
                 }

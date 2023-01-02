@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text.Json;
 using PdfExtractor.Models;
 
-namespace Viewer
+namespace Viewer.Wpf
 {
     internal class MainModel
     {
@@ -22,9 +22,9 @@ namespace Viewer
             return operations ?? Enumerable.Empty<Operation>();
         }
 
-        public IEnumerable<TreeNode> GetOperationTree()
+        public IEnumerable<ITreeNode> GetOperationTree()
         {
-            var years = new List<TreeNode>();
+            var years = new List<ITreeNode>();
 
             foreach (var operation in GetOperationList())
             {
@@ -32,7 +32,7 @@ namespace Viewer
                 var year = years.SingleOrDefault(y => y.ID == yearID);
                 if (year == null)
                 {
-                    year = new TreeNode
+                    year = new InnerNode
                     {
                         ID = yearID,
                         Title = $"{yearID}"
@@ -44,7 +44,7 @@ namespace Viewer
                 var month = year.SubCollection.SingleOrDefault(m => m.ID == monthID);
                 if (month == null)
                 {
-                    month = new TreeNode
+                    month = new InnerNode
                     {
                         ID = monthID,
                         Title = $"{monthID}"
@@ -56,7 +56,7 @@ namespace Viewer
                 var category = month.SubCollection.SingleOrDefault(c => c.ID == categoryID);
                 if (category == null)
                 {
-                    category = new TreeNode
+                    category = new InnerNode
                     {
                         ID = categoryID,
                         Title = operation.Category
@@ -64,12 +64,12 @@ namespace Viewer
                     month.SubCollection.Add(category);
                 }
 
-                category.SubCollection.Add(new TreeNode
+                category.SubCollection.Add(new EndNode
                 {
                     Title = $"{operation.DateTime} -- {operation.Account} -- {operation.Description}",
-                    Money = (int)operation.Amount.Value
+                    Money = new AggregatedMoney(operation.Amount)
                 });
-                category.Money += (int)operation.Amount.Value;
+                category.Money.Add(operation.Amount);
             }
 
             return years;

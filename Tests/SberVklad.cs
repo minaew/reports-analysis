@@ -20,11 +20,7 @@ namespace Tests
                         new Operation
                         {
                             DateTime = new DateTime(2021, 9, 18),
-                            Amount = new Money
-                            {
-                                Value = -500,
-                                Currency = "rub"
-                            },
+                            Amount = new Money(-500,"rub"),
                             Description = "Выдача процентов"
                         });
         }
@@ -38,11 +34,7 @@ namespace Tests
                         new Operation
                         {
                             DateTime = new DateTime(2021, 6, 7),
-                            Amount = new Money
-                            {
-                                Value = 61.49,
-                                Currency = "rub"
-                            },
+                            Amount = new Money(61.49, "rub"),
                             Description = "Пролонгация"
                         });
         }
@@ -56,11 +48,7 @@ namespace Tests
                         new Operation
                         {
                             DateTime = new DateTime(2020, 10, 4),
-                            Amount = new Money
-                            {
-                                Value = -600,
-                                Currency = "rub"
-                            },
+                            Amount = new Money(-600,"rub"),
                             Description = "Выдача процентов"
                         });
         }
@@ -84,11 +72,7 @@ namespace Tests
                         new Operation
                         {
                             DateTime = new DateTime(2021, 8, 12),
-                            Amount = new Money
-                            {
-                                Value = 0,
-                                Currency = "rub"
-                            },
+                            Amount = new Money(0,"rub"),
                             Description = "Капитализация"
                         });
         }
@@ -104,11 +88,7 @@ namespace Tests
                         new Operation
                         {
                             DateTime = new DateTime(2021, 8, 12),
-                            Amount = new Money
-                            {
-                                Value = 0,
-                                Currency = "rub"
-                            },
+                            Amount = new Money(0,"rub"),
                             Description = "Капитализация"
                         });
         }

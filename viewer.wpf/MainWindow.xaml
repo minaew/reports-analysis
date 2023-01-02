@@ -1,27 +1,32 @@
-<Window xmlns="https://github.com/avaloniaui"
+﻿<Window x:Class="Viewer.Wpf.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Viewer"
+        xmlns:local="clr-namespace:Viewer.Wpf"
         mc:Ignorable="d"
-        x:Class="Viewer.MainWindow">
+        Title="MainWindow" Height="450" Width="800">
     <TabControl SelectedIndex="1">
         <TabItem Header="Tree">
-            <TreeView Items="{Binding Tree}">
+            <TreeView ItemsSource="{Binding Tree}">
                 <TreeView.ItemTemplate>
-                    <TreeDataTemplate DataType="{x:Type local:TreeNode}"
+                    <HierarchicalDataTemplate DataType="{x:Type local:ITreeNode}"
                                       ItemsSource="{Binding SubCollection}">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="{Binding Money}"/>
                             <TextBlock Text="{Binding Title}"
                                        Margin="10 0 0 0"/>
                         </StackPanel>
-                    </TreeDataTemplate>
+                    </HierarchicalDataTemplate>
                 </TreeView.ItemTemplate>
             </TreeView>
         </TabItem>
         <TabItem Header="List">
-            <Grid RowDefinitions="Auto,*">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
                 <StackPanel Orientation="Horizontal"
                             Grid.Row="0">
                     <CheckBox Content="n/a only"
@@ -32,7 +37,8 @@
                                Margin="10"/>
                 </StackPanel>
 
-                <DataGrid Items="{Binding List}"
+                <DataGrid ItemsSource="{Binding List}"
+                          AutoGenerateColumns="False"
                           Grid.Row="1">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="DateTime"

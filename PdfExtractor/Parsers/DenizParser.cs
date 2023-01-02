@@ -41,11 +41,7 @@ namespace PdfExtractor.Parsers
                     {
                         DateTime = DateTime.Parse(date),
                         Account = Account,
-                        Amount = new Money
-                        {
-                            Currency = "TRY",
-                            Value = amount
-                        },
+                        Amount = new Money(amount, "try"),
                         Description = details
                     };
                 }

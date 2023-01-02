@@ -118,10 +118,7 @@ namespace PdfExtractor.Parsers
                 {
                     yield return new Operation
                     {
-                        Amount = new Money
-                        {
-                            Value = amounts[i]
-                        },
+                        Amount = new Money(amounts[i], "rub"),
                         Description = descriptions[i],
                         DateTime = dateTimes[i].Item2
                     };

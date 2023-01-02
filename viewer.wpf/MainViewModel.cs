@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using PdfExtractor.Models;
 
-namespace Viewer
+namespace Viewer.Wpf
 {
     internal class MainViewModel : INotifyPropertyChanged
     {
@@ -21,7 +21,7 @@ namespace Viewer
             UpdateOperationTree();
         }
 
-        public ICollection<TreeNode> Tree { get; } = new ObservableCollection<TreeNode>();
+        public ICollection<ITreeNode> Tree { get; } = new ObservableCollection<ITreeNode>();
 
         public ICollection<Operation> List { get; } = new ObservableCollection<Operation>();
 

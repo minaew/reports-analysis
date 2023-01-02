@@ -52,11 +52,7 @@ namespace PdfExtractor.Parsers
                     yield return new Operation
                     {
                         Account = Account,
-                        Amount = new Money
-                        {
-                            Value = value,
-                            Currency = currency
-                        },
+                        Amount = new Money(value, currency),
                         Description = description,
                         DateTime = dateTime
                     };

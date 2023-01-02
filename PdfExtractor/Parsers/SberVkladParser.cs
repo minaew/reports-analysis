@@ -65,10 +65,7 @@ namespace PdfExtractor.Parsers
                     yield return new Operation
                     {
                         DateTime = DateTime.ParseExact(dateToken, "dd.MM.yyyy", CultureInfo.InvariantCulture),
-                        Amount = new Money
-                        {
-                            Value = double.Parse(amountToken, CultureInfo.InvariantCulture)
-                        },
+                        Amount = new Money(double.Parse(amountToken, CultureInfo.InvariantCulture), "rub"),
                         Description = description
                     };
                 }

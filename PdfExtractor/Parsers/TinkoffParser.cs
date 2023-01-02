@@ -77,10 +77,7 @@ namespace PdfExtractor.Parsers
                     yield return new Operation
                     {
                         DateTime = dateTime,
-                        Amount = new Money
-                        {
-                            Value = double.Parse(amountToken, NumberStyles.Float, CultureInfo.InvariantCulture)
-                        },
+                        Amount = new Money(double.Parse(amountToken, NumberStyles.Float, CultureInfo.InvariantCulture), "rub"),
                         Description = description
                     };
                 }

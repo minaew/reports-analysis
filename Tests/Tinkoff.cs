@@ -18,11 +18,7 @@ namespace Tests
             Assert.Contains(new Operation
             {
                 DateTime = new DateTime(2021, 12, 4, 13, 42, 0),
-                Amount = new Money
-                {
-                    Value = -1269.98,
-                    Currency = "rub"
-                },
+                Amount = new Money(-1269.98, "rub"),
                 Description = "Оплата в PYATEROCHKA 21152 Zelenograd RUS"
             }, operations);
         }
@@ -36,11 +32,7 @@ namespace Tests
             Assert.Contains(new Operation
             {
                 DateTime = new DateTime(2021, 12, 16, 22, 57, 0),
-                Amount = new Money
-                {
-                    Value = 1000,
-                    Currency = "rub"
-                },
+                Amount = new Money(1000, "rub"),
                 Description = "Пополнение. Система быстрых платежей"
             }, operations);
         }
