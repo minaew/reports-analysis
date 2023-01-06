@@ -15,6 +15,8 @@ namespace PdfExtractor.Models
         public string Category { get; set; }
 
         public string Description { get; set; }
+
+        public bool IsUnknownCategory => string.IsNullOrEmpty(Category) || Category == "n/a";
     }
 
     public class Money
