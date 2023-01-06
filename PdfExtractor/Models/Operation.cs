@@ -19,6 +19,10 @@ namespace PdfExtractor.Models
 
     public class Money
     {
+        public Money()
+        {
+        }
+        
         public Money(double value, string currency)
         {
             Value = value;
@@ -31,9 +35,9 @@ namespace PdfExtractor.Models
             return new Money(double.Parse(tokens[0]), tokens[1]);
         }
         
-        public double Value { get; }
+        public double Value { get; set; }
         
-        public string Currency { get; }
+        public string Currency { get; set; }
     }
 
     public class AggregatedMoney

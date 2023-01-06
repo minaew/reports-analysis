@@ -1,5 +1,8 @@
 .vscode
 .vs
+.idea
+
+*.user
 
 */bin/*
 */obj/*

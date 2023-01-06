@@ -8,7 +8,7 @@ namespace Viewer.Wpf
     internal class MainViewModel : INotifyPropertyChanged
     {
         private readonly MainModel _model;
-        private bool _isNaOnly;
+        private bool _isNaOnly = true;
         private int _count;
 
         public event PropertyChangedEventHandler? PropertyChanged;

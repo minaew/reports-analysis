@@ -107,7 +107,10 @@ namespace CLI
                 var newOperation = operation;
 
                 newOperation.Account = Path.GetFileName(path);
-                newOperation.Category = categories.GetCategory(operation);
+                if (string.IsNullOrEmpty(newOperation.Category))
+                {
+                    newOperation.Category = categories.GetCategory(operation);
+                }
 
                 yield return newOperation;
             }

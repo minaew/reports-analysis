@@ -17,8 +17,8 @@ namespace Viewer.Wpf
 
         public IEnumerable<Operation> GetOperationList()
         {
-            using var file = File.OpenRead(_filePath);
-            var operations = JsonSerializer.Deserialize<List<Operation>>(file);
+            var content = File.ReadAllText(_filePath);
+            var operations = JsonSerializer.Deserialize<List<Operation>>(content);
             return operations ?? Enumerable.Empty<Operation>();
         }
 

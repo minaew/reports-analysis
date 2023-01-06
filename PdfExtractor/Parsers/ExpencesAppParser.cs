@@ -20,7 +20,8 @@ namespace PdfExtractor.Parsers
                     Account = movements.label,
                     Amount = new Money(t.amount, movements.currency),
                     DateTime = t.date,
-                    Description = t.payee
+                    Description = t.payee,
+                    Category = t.category
                 }
             );
         }
@@ -42,6 +43,8 @@ namespace PdfExtractor.Parsers
             public DateTime date { get; set; }
             
             public string payee { get; set; }
+            
+            public string category { get; set; }
         }
 
         public class DateConverter : JsonConverter<DateTime>

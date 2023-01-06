@@ -21,7 +21,7 @@ namespace PdfExtractor.Parsers
                 }
 
                 var tokens = line.Split(Separator);
-                if (tokens.Length != 3)
+                if (tokens.Length != 4)
                 {
                     throw new InvalidOperationException();
                 }
@@ -30,7 +30,8 @@ namespace PdfExtractor.Parsers
                 {
                     DateTime = DateTime.ParseExact(tokens[0].Trim(), "dd.MM.yyyy", null),
                     Amount = Money.FromString(tokens[1].Trim()),
-                    Description = tokens[2].Trim()
+                    Description = tokens[2].Trim(),
+                    Category = tokens[3].Trim()
                 };
             }
         }
