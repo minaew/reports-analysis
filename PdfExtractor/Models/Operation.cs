@@ -19,26 +19,28 @@ namespace PdfExtractor.Models
         public bool IsUnknownCategory => string.IsNullOrEmpty(Category) || Category == "n/a";
     }
 
-    public class Money
+    public struct Money
     {
         public Money()
         {
+            Value = 0;
+            Currency = "";
         }
-        
+
         public Money(double value, string currency)
         {
             Value = value;
             Currency = currency.ToLowerInvariant();
         }
-        
+
         public static Money FromString(string money)
         {
             var tokens = money.Split(" ");
             return new Money(double.Parse(tokens[0]), tokens[1]);
         }
-        
+
         public double Value { get; set; }
-        
+
         public string Currency { get; set; }
     }
 
@@ -61,8 +63,8 @@ namespace PdfExtractor.Models
             {
                 _dictionary[money.Currency] = new Money(0, money.Currency);
             }
-            
-            var value = _dictionary[money.Currency].Value; 
+
+            var value = _dictionary[money.Currency].Value;
             _dictionary[money.Currency] = new Money(value + money.Value, money.Currency);
         }
 
@@ -74,9 +76,28 @@ namespace PdfExtractor.Models
             }
         }
 
+        public double TotalRub => _dictionary.Select(pair =>
+        {
+            switch (pair.Key)
+            {
+                case "rub":
+                    return pair.Value.Value;
+
+                case "try":
+                    return pair.Value.Value * 3.66;
+
+                case "amd":
+                    return pair.Value.Value * 0.17;
+
+                default:
+                    throw new NotImplementedException();
+            }
+        }).Sum();
+
         public override string ToString()
         {
-            return string.Join(" ", _dictionary.Values.Select(v => $"{(int)v.Value}{v.Currency}"));
+            return $"{(int)TotalRub} " +
+                    string.Join(" ", _dictionary.Values.Select(v => $"{(int)v.Value}{v.Currency}"));
         }
     }
 }

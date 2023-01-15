@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text.RegularExpressions;
 using UglyToad.PdfPig;
 using PdfExtractor.Models;
 
@@ -10,78 +9,85 @@ namespace PdfExtractor.Parsers
 {
     public class TinkoffParser : IParser
     {
-        private readonly Regex _dateTimeRegex = new(@"\d{2}\.\d{2}\.\d{2} \d{2}:\d{2}", RegexOptions.Compiled);
-        private readonly Regex _dateRegex = new(@"\d{2}\.\d{2}\.\d{2}", RegexOptions.Compiled);
-
-        private const double AmountLeft = 205;
-        private const double AmountRight = 270;
-        private const double DescriptionLeft = 300;
+        private const int HeaderHeight = 16;
+        private const string DateTimePattern = "dd.MM.yy HH:mm";
+        private const string DatePattern = "dd.MM.yy";
 
         public IEnumerable<Operation> Parse(string path)
         {
-            using var document = PdfDocument.Open(path);
-            foreach (var page in document.GetPages())
+            var operation = new Operation();
+            foreach (var line in GetContent(path).Skip(HeaderHeight))
             {
-                var words = page.GetWords().ToList();
-                var dateTimeTitle = PdfHelper.GetRect(words, "Дата", "и", "время");
-                if (dateTimeTitle == null) continue;
-
-                var dates = words.Where(w => w.BoundingBox.Top < dateTimeTitle.Value.Top &&
-                                             w.BoundingBox.Left >= dateTimeTitle.Value.Left &&
-                                             w.BoundingBox.Right <= dateTimeTitle.Value.Right)
-                    .ToList();
-
-                var dateStrs = PdfHelper.GetLines(dates).ToList();
-
-
-                foreach (var d in dateStrs)
+                if (line.StartsWith("Операции по карте") ||
+                    line.StartsWith("Дата и время") ||
+                    line.StartsWith("операции банком"))
                 {
-                    var token = d.Item2;
-                    DateTime dateTime;
-                    if (_dateTimeRegex.IsMatch(d.Item2))
-                    {
-                        dateTime = DateTime.ParseExact(token, "dd.MM.yy HH:mm", null);
-                    }
-                    else
-                    {
-                        if (_dateRegex.IsMatch(d.Item2))
-                        {
-                            dateTime = DateTime.ParseExact(token, "dd.MM.yy", null);
-                        }
-                        else
-                        {
-                            continue;
-                        }
-                    }
+                    continue;
+                }
 
-                    var same = words.Where(o => o.BoundingBox.Top >= d.Item1 &&
-                                                o.BoundingBox.Bottom <= d.Item1)
-                        .ToList();
+                if (line.StartsWith("Адреса банкоматов"))
+                {
+                    yield return operation;
+                }
 
-                    var amountWords = same.Where(o => o.BoundingBox.Left > AmountLeft &&
-                                                      o.BoundingBox.Right < AmountRight)
-                        .ToList();
-                    var amountToken = string.Join("", amountWords.Select(o => o.Text));
-                    if (amountToken.StartsWith('+'))
+                DateTime dateTime;
+                if (line.Length >= DateTimePattern.Length &&
+                    DateTime.TryParseExact(line.Substring(0, DateTimePattern.Length), DateTimePattern, null, DateTimeStyles.None, out dateTime))
+                {
+                    if (!operation.Equals(default(Operation)))
                     {
-                        amountToken = amountToken[1..];
-                    }
-                    else
-                    {
-                        amountToken = "-" + amountToken;
+                        yield return operation;
                     }
 
-                    var descriptionWords = same.Where(o => o.BoundingBox.Left >= DescriptionLeft);
-                    var description = string.Join(" ", descriptionWords.Select(d => d.Text));
-
-                    yield return new Operation
+                    operation = ParseAfterDate(new string(line.Skip(DateTimePattern.Length + 9).ToArray()));
+                    operation.DateTime = dateTime;
+                }
+                else if (line.Length >= DatePattern.Length &&
+                    DateTime.TryParseExact(line.Substring(0, DatePattern.Length), DatePattern, null, DateTimeStyles.None, out dateTime))
+                {
+                    if (!operation.Equals(default(Operation)))
                     {
-                        DateTime = dateTime,
-                        Amount = new Money(double.Parse(amountToken, NumberStyles.Float, CultureInfo.InvariantCulture), "rub"),
-                        Description = description
-                    };
+                        yield return operation;
+                    }
+
+                    operation = ParseAfterDate(new string(line.Skip(DatePattern.Length + 9).ToArray()));
+                    operation.DateTime = dateTime;
+                }
+                else
+                {
+                    operation.Description += " " + line;
                 }
             }
+        }
+
+        private static IReadOnlyCollection<string> GetContent(string path)
+        {
+            using var document = PdfDocument.Open(path);
+
+            return document.GetPages()
+                .Select(page => page.GetWords())
+                .Select(words => PdfHelper.GetLines(words)
+                                          .Select(w => w.Item2))
+                .SelectMany(lines => lines)
+                .ToList();
+        }
+
+        private static Operation ParseAfterDate(string line)
+        {
+            var tokens = line.Split('₽') // todo: another currency
+                             .Select(t => t.Trim())
+                             .ToList();
+
+            var amount = double.Parse(tokens[0].Replace(" ", ""));
+            if (!tokens[0].StartsWith("+"))
+            {
+                amount = -amount;
+            }
+            return new Operation
+            {
+                Amount = new Money(amount, "rub"), // todo: another currency
+                Description = tokens[2]
+            };
         }
     }
 }

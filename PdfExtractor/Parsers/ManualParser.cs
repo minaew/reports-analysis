@@ -7,7 +7,7 @@ namespace PdfExtractor.Parsers
 {
     public class ManualParser : IParser
     {
-        private const string Separator = "-";
+        private const string Separator = ",";
 
         public IEnumerable<Operation> Parse(string path)
         {

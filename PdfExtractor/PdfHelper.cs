@@ -69,7 +69,7 @@ namespace PdfExtractor
 
         public static IEnumerable<Tuple<double, string>> GetLines(IEnumerable<Word> words)
         {
-            foreach (var group in words.GroupBy(d => d.BoundingBox.Centroid.Y))
+            foreach (var group in words.GroupBy(d => d.BoundingBox.Bottom))
             {
                 yield return Tuple.Create(group.Key,
                                           string.Join(" ", group.Select(g => g.Text)));

@@ -17,7 +17,8 @@
                     <HierarchicalDataTemplate DataType="{x:Type local:ITreeNode}"
                                       ItemsSource="{Binding SubCollection}">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding Money}"/>
+                            <TextBlock Text="{Binding Money}"
+                                       Width="500"/>
                             <TextBlock Text="{Binding Title}"
                                        Margin="10 0 0 0"/>
                         </StackPanel>

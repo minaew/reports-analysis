@@ -12,7 +12,7 @@ namespace PdfExtractor
     {
         string GetCategory(Operation operation);
     }
-    
+
     public class Categories : ICategories
     {
         private readonly IDictionary<string, ICollection<string>>? _tree;
@@ -41,7 +41,7 @@ namespace PdfExtractor
 
             _cases = new Dictionary<DateTime, string>(pairs.SelectMany(d => d.Select(p =>
                 new KeyValuePair<DateTime, string>(
-                    DateTime.ParseExact(p.Key, "dd.MM.yyyy HH:mm", CultureInfo.InvariantCulture),
+                    DateTime.ParseExact(p.Key, "dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture),
                     p.Value))));
         }
 
@@ -51,7 +51,7 @@ namespace PdfExtractor
             {
                 return cat;
             }
-            
+
             if (string.IsNullOrEmpty(operation.Description))
             {
                 return "n/a";

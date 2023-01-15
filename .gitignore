@@ -7,3 +7,4 @@
 */bin/*
 */obj/*
 Tests/Data.cs
+/CLI/Properties/launchSettings.json
