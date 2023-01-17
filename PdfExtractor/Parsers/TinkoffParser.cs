@@ -74,19 +74,21 @@ namespace PdfExtractor.Parsers
 
         private static Operation ParseAfterDate(string line)
         {
-            var tokens = line.Split('₽') // todo: another currency
-                             .Select(t => t.Trim())
-                             .ToList();
+            var border = line.LastIndexOf('₽');
 
-            var amount = double.Parse(tokens[0].Replace(" ", ""));
-            if (!tokens[0].StartsWith("+"))
+            var amountToken = new string(line.Substring(0, border).Replace(" ", "")
+                .Reverse().TakeWhile(c => char.IsDigit(c) || c == '.' || c == '+').Reverse()
+                .ToArray());
+
+            var amount = double.Parse(amountToken);
+            if (!amountToken.StartsWith("+"))
             {
                 amount = -amount;
             }
             return new Operation
             {
-                Amount = new Money(amount, "rub"), // todo: another currency
-                Description = tokens[2]
+                Amount = new Money(amount, "rub"),
+                Description = line.Substring(border + 1, line.Length - border - 1).Trim()
             };
         }
     }
