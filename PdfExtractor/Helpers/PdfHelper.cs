@@ -5,7 +5,7 @@ using UglyToad.PdfPig.Content;
 using UglyToad.PdfPig.Core;
 using PdfExtractor.Models;
 
-namespace PdfExtractor
+namespace PdfExtractor.Helpers
 {
     internal class PdfHelper
     {
@@ -16,7 +16,7 @@ namespace PdfExtractor
                 var isEqual = true;
                 for (var j = 0; j < text.Length; j++)
                 {
-                    if (text[j] != words[i+j].Text)
+                    if (text[j] != words[i + j].Text)
                     {
                         isEqual = false;
                         break;
@@ -29,7 +29,7 @@ namespace PdfExtractor
                     {
                         Left = words[i].BoundingBox.Left,
                         Top = words[i].BoundingBox.Top,
-                        Right = words[i+text.Length-1].BoundingBox.Right
+                        Right = words[i + text.Length - 1].BoundingBox.Right
                     };
                 }
             }
@@ -83,7 +83,7 @@ namespace PdfExtractor
                 yield return string.Join(" ", group.Select(g => g.Text));
             }
         }
-        
+
         public static IEnumerable<Word> Split(IEnumerable<Word> words)
         {
             return words.Select(Split).SelectMany(c => c);
@@ -120,7 +120,7 @@ namespace PdfExtractor
             return DoublesEquals(point1.X, point2.X) && DoublesEquals(point1.Y, point2.Y);
         }
 
-        public static bool DoublesEquals(double d1, double d2) 
+        public static bool DoublesEquals(double d1, double d2)
         {
             return d1 + double.Epsilon >= d2 && d1 - double.Epsilon <= d2;
         }

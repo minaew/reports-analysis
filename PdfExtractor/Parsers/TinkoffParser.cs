@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using UglyToad.PdfPig;
 using PdfExtractor.Models;
+using PdfExtractor.Helpers;
 
 namespace PdfExtractor.Parsers
 {

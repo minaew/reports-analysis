@@ -99,6 +99,7 @@ namespace CLI
                 Format.Deniz => new DenizParser(),
                 Format.ExpencesApp => new ExpensesAppParser(),
                 Format.Ararat => new AraratParser(),
+                Format.Ziraat => new ZiraatParser(),
                 _ => new StubParser(),
             };
 

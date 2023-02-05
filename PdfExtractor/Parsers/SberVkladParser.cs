@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using UglyToad.PdfPig;
 using PdfExtractor.Models;
+using PdfExtractor.Helpers;
 
 namespace PdfExtractor.Parsers
 {

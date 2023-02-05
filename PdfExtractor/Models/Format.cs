@@ -9,6 +9,7 @@ namespace PdfExtractor.Models
         Tinkoff,
         Deniz,
         ExpencesApp,
-        Ararat
+        Ararat,
+        Ziraat
     }
 }
