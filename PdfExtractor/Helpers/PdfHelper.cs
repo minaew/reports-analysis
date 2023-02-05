@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UglyToad.PdfPig.Content;
 using UglyToad.PdfPig.Core;
+using UglyToad.PdfPig;
 using PdfExtractor.Models;
 
 namespace PdfExtractor.Helpers
@@ -123,6 +124,37 @@ namespace PdfExtractor.Helpers
         public static bool DoublesEquals(double d1, double d2)
         {
             return d1 + double.Epsilon >= d2 && d1 - double.Epsilon <= d2;
+        }
+
+        public static bool ContainsSequential(string path, params string[] sequence)
+        {
+            var words = GetWords(path);
+            for (var i = 0; i < words.Count - sequence.Length; i++)
+            {
+                var equals = true;
+                for (var j = 0; j < sequence.Length; j++)
+                {
+                    if (words[i + j].Text != sequence[j])
+                    {
+                        equals = false;
+                        break;
+                    }
+                }
+                if (equals)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public static string GetFirstWord(string path) => GetWords(path).FirstOrDefault()?.Text ?? string.Empty;
+
+        private static IReadOnlyList<Word> GetWords(string path)
+        {
+            using var document = PdfDocument.Open(path);
+            return document.GetPages().SelectMany(p => p.GetWords()).ToList();
         }
     }
 }

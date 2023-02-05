@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
@@ -21,14 +20,10 @@ namespace PdfExtractor.Parsers
             using var doc = SpreadsheetDocument.Open(path, false);
 
             var workbookPart = doc.WorkbookPart;
-            var sheets = workbookPart.Workbook.GetFirstChild<Sheets>();
-            var strings = workbookPart.SharedStringTablePart?.SharedStringTable;
-            foreach (var sheet in sheets.Cast<Sheet>())
+            var strings = workbookPart?.SharedStringTablePart?.SharedStringTable;
+            foreach (var sheet in ExcelHelper.GetSheets(doc))
             {
-                var worksheetPart = (WorksheetPart)workbookPart.GetPartById(sheet.Id);
-
-                var sheetData = worksheetPart.Worksheet.GetFirstChild<SheetData>();
-                foreach (var row in sheetData.Cast<Row>().Skip(12))
+                foreach (var row in ExcelHelper.GetRows(workbookPart, sheet).Skip(12))
                 {
                     var cells = row.Cast<Cell>().ToList();
 
@@ -36,7 +31,7 @@ namespace PdfExtractor.Parsers
                     if (string.IsNullOrEmpty(date)) break;
 
                     var explanations = ExcelHelper.GetString(cells[2], strings);
-                    var amount = GetNumber(cells[3]);
+                    var amount = ExcelHelper.GetNumber(cells[3]);
 
                     yield return new Operation
                     {
@@ -47,13 +42,6 @@ namespace PdfExtractor.Parsers
                     };
                 }
             }
-        }
-
-        private static double GetNumber(Cell cell)
-        {
-            Debug.Assert(cell.DataType == CellValues.Number);
-
-            return double.Parse(cell.InnerText.Replace(",", ""));
         }
     }
 }

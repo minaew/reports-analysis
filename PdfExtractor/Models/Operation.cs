@@ -6,15 +6,15 @@ namespace PdfExtractor.Models
 {
     public struct Operation
     {
-        public string Account { get; set; }
+        public string? Account { get; set; }
 
         public DateTime DateTime { get; set; }
 
         public Money Amount { get; set; }
 
-        public string Category { get; set; }
+        public string? Category { get; set; }
 
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         public bool IsUnknownCategory => string.IsNullOrEmpty(Category) || Category == "n/a";
     }
@@ -27,8 +27,10 @@ namespace PdfExtractor.Models
             Currency = "";
         }
 
-        public Money(double value, string currency)
+        public Money(double value, string? currency)
         {
+            if (currency == null) throw new ArgumentNullException(nameof(currency));
+
             Value = value;
             Currency = currency.ToLowerInvariant();
         }

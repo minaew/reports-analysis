@@ -44,14 +44,20 @@ namespace Viewer.Wpf
 
     internal class EndNode : ITreeNode
     {
+        public EndNode(AggregatedMoney money, string title)
+        {
+            Money = money;
+            Title = title;
+        }
+
         public int ID { get; }
         
-        public AggregatedMoney Money { get; set; }
+        public AggregatedMoney Money { get; }
         
-        public string Title { get; set; }
-        
-        public ICollection<ITreeNode> SubCollection { get; }
+        public string Title { get; }
 
-        public int Level { get; set; }
+        public ICollection<ITreeNode> SubCollection { get; } = new List<ITreeNode>();
+
+        public int Level { get; } = 3;
     }
 }

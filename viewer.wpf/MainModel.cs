@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -54,6 +55,10 @@ namespace Viewer.Wpf
                     year.SubCollection.Add(month);
                 }
 
+                if (string.IsNullOrEmpty(operation.Category))
+                {
+                    throw new InvalidOperationException();
+                }
                 var categoryID = operation.Category.GetHashCode();
                 var category = month.SubCollection.SingleOrDefault(c => c.ID == categoryID);
                 if (category == null)
@@ -67,12 +72,9 @@ namespace Viewer.Wpf
                     month.SubCollection.Add(category);
                 }
 
-                category.SubCollection.Add(new EndNode
-                {
-                    Title = $"{operation.DateTime} -- {operation.Account} -- {operation.Description}",
-                    Money = new AggregatedMoney(operation.Amount),
-                    Level = 3
-                });
+                category.SubCollection.Add(new EndNode(
+                    new AggregatedMoney(operation.Amount),
+                    $"{operation.DateTime} -- {operation.Account} -- {operation.Description}"));
                 category.Money.Add(operation.Amount);
             }
 

@@ -14,7 +14,7 @@ namespace Tests
             var detector = new FormatDetector();
             foreach (var file in Directory.EnumerateFiles(Data.Root))
             {
-                var format = detector.GetFormat(file);
+                var format = FormatDetector.GetFormat(file);
 
                 if (Path.GetExtension(file) == ".txt")
                 {

@@ -13,7 +13,7 @@
     </Window.Resources>
     <TabControl SelectedIndex="0">
         <TabItem Header="Tree">
-            <local:ColumnTreeView ItemsSource="{Binding Tree}">
+            <TreeView ItemsSource="{Binding Tree}">
                 <TreeView.ItemTemplate>
                     <HierarchicalDataTemplate DataType="{x:Type local:ITreeNode}"
                                       ItemsSource="{Binding SubCollection}">
@@ -24,7 +24,7 @@
                         </StackPanel>
                     </HierarchicalDataTemplate>
                 </TreeView.ItemTemplate>
-            </local:ColumnTreeView>
+            </TreeView>
         </TabItem>
         <TabItem Header="List">
             <Grid>

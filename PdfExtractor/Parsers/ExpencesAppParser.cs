@@ -14,11 +14,16 @@ namespace PdfExtractor.Parsers
         {
             using var stream = File.OpenRead(path);
             var movements = JsonSerializer.Deserialize<Movements>(stream);
+            if (movements?.transactions == null)
+            {
+                return Enumerable.Empty<Operation>();
+            }
+
             return movements.transactions.Select(t =>
                 new Operation
                 {
                     Account = movements.label,
-                    Amount = new Money(t.amount, movements.currency),
+                    Amount = new Money(t.amount, movements?.currency),
                     DateTime = t.date,
                     Description = t.payee,
                     Category = t.category
@@ -26,13 +31,14 @@ namespace PdfExtractor.Parsers
             );
         }
 
+#pragma warning disable IDE1006 // Naming Styles
         public class Movements
         {
-            public string label { get; set; }
-            
-            public string currency { get; set; }
+            public string? label { get; set; }
 
-            public IList<Transaction> transactions { get; set; }
+            public string? currency { get; set; }
+
+            public IList<Transaction>? transactions { get; set; }
         }
 
         public class Transaction
@@ -42,16 +48,17 @@ namespace PdfExtractor.Parsers
             [JsonConverter(typeof(DateConverter))]
             public DateTime date { get; set; }
             
-            public string payee { get; set; }
+            public string? payee { get; set; }
             
-            public string category { get; set; }
+            public string? category { get; set; }
         }
+#pragma warning restore IDE1006 // Naming Styles
 
         public class DateConverter : JsonConverter<DateTime>
         {
             public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
             {
-                return DateTime.ParseExact(reader.GetString(), "dd.MM.yyyy", null);
+                return DateTime.ParseExact(reader.GetString() ?? string.Empty, "dd.MM.yyyy", null);
             }
         
             public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)

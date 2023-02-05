@@ -47,7 +47,7 @@ namespace PdfExtractor
 
         public string GetCategory(Operation operation)
         {
-            if (_cases.TryGetValue(operation.DateTime, out string cat))
+            if (_cases.TryGetValue(operation.DateTime, out string? cat))
             {
                 return cat;
             }
