@@ -9,22 +9,22 @@
         Title="MainWindow" Height="450" Width="800">
     <Window.Resources>
         <local:Category2BackgroundConverter x:Key="Category2BackgroundConverter"/>
+        <local:LevelToWidthConverter x:Key="LevelToWidthConverter"/>
     </Window.Resources>
-    <TabControl SelectedIndex="1">
+    <TabControl SelectedIndex="0">
         <TabItem Header="Tree">
-            <TreeView ItemsSource="{Binding Tree}">
+            <local:ColumnTreeView ItemsSource="{Binding Tree}">
                 <TreeView.ItemTemplate>
                     <HierarchicalDataTemplate DataType="{x:Type local:ITreeNode}"
                                       ItemsSource="{Binding SubCollection}">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding Money}"
-                                       Width="500"/>
                             <TextBlock Text="{Binding Title}"
-                                       Margin="10 0 0 0"/>
+                                       Width="{Binding Level, Converter={StaticResource LevelToWidthConverter}}"/>
+                            <TextBlock Text="{Binding Money}"/>
                         </StackPanel>
                     </HierarchicalDataTemplate>
                 </TreeView.ItemTemplate>
-            </TreeView>
+            </local:ColumnTreeView>
         </TabItem>
         <TabItem Header="List">
             <Grid>

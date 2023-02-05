@@ -13,6 +13,8 @@ namespace Viewer.Wpf
         string Title { get; }
 
         ICollection<ITreeNode> SubCollection { get; }
+
+        int Level { get; }
     }
     
     internal class InnerNode : ITreeNode
@@ -36,6 +38,8 @@ namespace Viewer.Wpf
         public string Title { get; set; } = string.Empty;
 
         public ICollection<ITreeNode> SubCollection { get; } = new ObservableCollection<ITreeNode>();
+
+        public int Level { get; set; }
     }
 
     internal class EndNode : ITreeNode
@@ -47,5 +51,7 @@ namespace Viewer.Wpf
         public string Title { get; set; }
         
         public ICollection<ITreeNode> SubCollection { get; }
+
+        public int Level { get; set; }
     }
 }

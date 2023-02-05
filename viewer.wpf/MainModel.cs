@@ -35,7 +35,8 @@ namespace Viewer.Wpf
                     year = new InnerNode
                     {
                         ID = yearID,
-                        Title = $"{yearID}"
+                        Title = $"{yearID}",
+                        Level = 0
                     };
                     years.Add(year);
                 }
@@ -47,7 +48,8 @@ namespace Viewer.Wpf
                     month = new InnerNode
                     {
                         ID = monthID,
-                        Title = $"{monthID}"
+                        Title = $"{monthID}",
+                        Level = 1
                     };
                     year.SubCollection.Add(month);
                 }
@@ -59,7 +61,8 @@ namespace Viewer.Wpf
                     category = new InnerNode
                     {
                         ID = categoryID,
-                        Title = operation.Category
+                        Title = operation.Category,
+                        Level = 2
                     };
                     month.SubCollection.Add(category);
                 }
@@ -67,7 +70,8 @@ namespace Viewer.Wpf
                 category.SubCollection.Add(new EndNode
                 {
                     Title = $"{operation.DateTime} -- {operation.Account} -- {operation.Description}",
-                    Money = new AggregatedMoney(operation.Amount)
+                    Money = new AggregatedMoney(operation.Amount),
+                    Level = 3
                 });
                 category.Money.Add(operation.Amount);
             }
