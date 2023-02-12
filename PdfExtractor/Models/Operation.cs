@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace PdfExtractor.Models
 {
@@ -8,6 +10,7 @@ namespace PdfExtractor.Models
     {
         public string? Account { get; set; }
 
+        [JsonConverter(typeof(DateTimeConverter))]
         public DateTime DateTime { get; set; }
 
         public Money Amount { get; set; }
@@ -19,6 +22,7 @@ namespace PdfExtractor.Models
         public bool IsUnknownCategory => string.IsNullOrEmpty(Category) || Category == "n/a";
     }
 
+    [JsonConverter(typeof(MoneyConverter))]
     public struct Money
     {
         public Money()
@@ -100,6 +104,38 @@ namespace PdfExtractor.Models
         {
             return $"{(int)TotalRub} " +
                     string.Join(" ", _dictionary.Values.Select(v => $"{(int)v.Value}{v.Currency}"));
+        }
+    }
+
+    public class DateTimeConverter : JsonConverter<DateTime>
+    {
+        public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            return DateTime.ParseExact(reader.GetString() ?? string.Empty, "dd.MM.yyyy HH:mm", null);
+        }
+
+        public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class MoneyConverter : JsonConverter<Money>
+    {
+        public override Money Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            var token = reader.GetString();
+            if (string.IsNullOrEmpty(token)) throw new ParsingException();
+
+            var tokens = token.Split(' ');
+            if (tokens.Length != 2) throw new ParsingException();
+
+            return new Money(double.Parse(tokens[0]), tokens[1]);
+        }
+
+        public override void Write(Utf8JsonWriter writer, Money value, JsonSerializerOptions options)
+        {
+            throw new NotImplementedException();
         }
     }
 }

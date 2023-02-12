@@ -1,50 +1,44 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using DocumentFormat.OpenXml.Packaging;
-using DocumentFormat.OpenXml.Spreadsheet;
-using PdfExtractor.Helpers;
+using System.Text.Json;
 using PdfExtractor.Models;
 
 namespace PdfExtractor.Parsers
 {
-    // excel document
-    // data start from A9
-    // columns: date, details, receipt number, amount (try), balance (try)
     public class DenizParser : IParser
     {
-        private const string Account = "deniz-maha";
+        private const string Python = "python";
+        private const string Script = "deniz_parser.py";
+        private const string WorkingDirectory = "..\\";
 
         public IEnumerable<Operation> Parse(string path)
         {
-            using var doc = SpreadsheetDocument.Open(path, false);
-
-            var workbookPart = doc.WorkbookPart;
-            var strings = workbookPart?.SharedStringTablePart?.SharedStringTable;
-
-            foreach (var sheet in ExcelHelper.GetSheets(doc))
+            using (var process = Process.Start(new ProcessStartInfo
             {
-                foreach (var row in ExcelHelper.GetRows(workbookPart, sheet).Skip(8))
+                FileName = Python,
+                Arguments = $"\"{Script}\" \"{path}\"",
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                WorkingDirectory = WorkingDirectory
+            }))
+            {
+                if (process == null) throw new InvalidOperationException();
+
+                while (true)
                 {
-                    var cells = row.Cast<Cell>().ToList();
-                    Debug.Assert(cells.Count == 5);
+                    var line = process.StandardOutput.ReadLine();
+                    if (line == null) break;
 
-                    var date = ExcelHelper.GetString(cells[0], strings);
-                    if (date == null)
-                    {
-                        throw new ParsingException();
-                    }
-                    var details = ExcelHelper.GetString(cells[1], strings);
-                    var amount = ExcelHelper.GetNumber(cells[3]);
+                    var operation = JsonSerializer.Deserialize<Operation>(line);
+                    yield return operation;
+                }
 
-                    yield return new Operation
-                    {
-                        DateTime = DateTime.Parse(date),
-                        Account = Account,
-                        Amount = new Money(amount, "try"),
-                        Description = details
-                    };
+                process.WaitForExit();
+                if (process.ExitCode != 0)
+                {
+                    var error = process.StandardError.ReadToEnd();
+                    throw new ParsingException(error);
                 }
             }
         }
