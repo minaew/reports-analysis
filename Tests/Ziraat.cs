@@ -24,4 +24,15 @@ namespace Tests
                 );
         }
     }
+
+    public class Deniz
+    {
+        [Fact]
+        public void Count()
+        {
+            var parser = new DenizParser();
+            var operations = parser.Parse(Data.Deniz).ToList();
+            Assert.Equal(104, operations.Count);
+        }
+    }
 }

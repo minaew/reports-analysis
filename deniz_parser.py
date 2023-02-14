@@ -8,7 +8,7 @@ path = sys.argv[1]
 # columns: date, details, receipt number, amount (try), balance (try)
 book = openpyxl.load_workbook(path)
 sheet = book.active
-for row in range(9, sheet.max_row):
+for row in range(9, sheet.max_row + 1):
     operation = {"Account": "maha-deniz",
                  "DateTime": sheet.cell(row, 1).value,
                  "Description": sheet.cell(row, 2).value,
