@@ -111,7 +111,20 @@ namespace PdfExtractor.Models
     {
         public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            return DateTime.ParseExact(reader.GetString() ?? string.Empty, "dd.MM.yyyy HH:mm", null);
+            var token = reader.GetString();
+            if (string.IsNullOrEmpty(token)) throw new ParsingException();
+
+            if (token.Length == "dd.MM.yyyy HH:mm".Length)
+            {
+                return DateTime.ParseExact(token ?? string.Empty, "dd.MM.yyyy HH:mm", null);
+            }
+
+            if (token.Length == "dd.MM.yyyy".Length)
+            {
+                return DateTime.ParseExact(token ?? string.Empty, "dd.MM.yyyy", null);
+            }
+
+            throw new ParsingException();
         }
 
         public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)

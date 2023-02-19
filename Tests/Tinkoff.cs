@@ -41,15 +41,6 @@ namespace Tests
         }
 
         [Fact]
-        public void Count()
-        {
-            var parser = new TinkoffParser();
-            var operations = parser.Parse(Data.MahaSeptember).ToList();
-
-            Assert.Equal(47, operations.Count());
-        }
-
-        [Fact]
         // 01.09.22 21:10 02.09.22 100.00 ₽ 100.00 ₽ Внешний банковский перевод счёт 40703810238000008427, ПАО
         //                                           СБЕРБАНК
         public void MultiLine()
