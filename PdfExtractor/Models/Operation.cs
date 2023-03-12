@@ -19,7 +19,15 @@ namespace PdfExtractor.Models
 
         public string? Description { get; set; }
 
+        [JsonIgnore]
         public bool IsUnknownCategory => string.IsNullOrEmpty(Category) || Category == "n/a";
+
+        public Operation WithAccount(string? account)
+        {
+            var operation = this;
+            operation.Account = account;
+            return operation;
+        }
     }
 
     [JsonConverter(typeof(MoneyConverter))]

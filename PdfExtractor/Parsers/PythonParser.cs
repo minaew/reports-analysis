@@ -17,7 +17,7 @@ namespace PdfExtractor.Parsers
             _script = script;
         }
 
-        public IEnumerable<Operation> Parse(string path)
+        public virtual IEnumerable<Operation> Parse(string path)
         {
             using var process = Process.Start(new ProcessStartInfo
             {

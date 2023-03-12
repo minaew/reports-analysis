@@ -42,8 +42,6 @@ namespace PdfExtractor.Parsers
             foreach (var operation in parser.Parse(path))
             {
                 var newOperation = operation;
-
-                newOperation.Account = Path.GetFileName(path);
                 if (string.IsNullOrEmpty(newOperation.Category))
                 {
                     newOperation.Category = _categories.GetCategory(operation);

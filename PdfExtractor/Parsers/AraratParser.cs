@@ -5,17 +5,28 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using UglyToad.PdfPig;
 using PdfExtractor.Models;
+using PdfExtractor.Helpers;
 
 namespace PdfExtractor.Parsers
 {
     public class AraratParser : IParser
     {
         private readonly Regex _dateRegex = new Regex(@"\d{2}\.\d{2}\.\d{4}", RegexOptions.Compiled);
-        private const string Account = "ararat";
-        
+
         public IEnumerable<Operation> Parse(string path)
         {
             using var document = PdfDocument.Open(path);
+
+            var firstPageWords = document.GetPage(1).GetWords();
+            var firstPageLines = PdfHelper.GetLines(firstPageWords).Take(5).ToList();
+
+            var firstPageLine = firstPageLines[0].Item2; // ԱՐԱՐԱՏԲԱՆԿ ԲԲԸ Հաշվի համար` 1510 0588 2510 0100
+            var accountNumber = firstPageLine.Substring("ԱՐԱՐԱՏԲԱՆԿ ԲԲԸ Հաշվի համար`".Length + 1).Replace(" ", "");
+            firstPageLine = firstPageLines[4].Item2; // MINAEV ALEKSEI- քարտ
+            var name = firstPageLine.Substring(0, firstPageLine.Length - "- քարտ".Length);
+
+            var account = $"ararat {accountNumber} {name}";
+
             foreach (var page in document.GetPages())
             {
                 var words = page.GetWords().ToList();
@@ -30,7 +41,7 @@ namespace PdfExtractor.Parsers
                         .ToList();
                     // todo: combine
                     line.RemoveAll(w => w.BoundingBox.Left > 134 && w.BoundingBox.Left < 135);
-                    
+
                     var dateTime = DateTime.ParseExact($"{line[0].Text} {line[1].Text}",
                         "dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture);
 
@@ -46,12 +57,12 @@ namespace PdfExtractor.Parsers
                         value = -double.Parse(line[3].Text);
                     }
 
-                    var description = string.Join(" ", 
+                    var description = string.Join(" ",
                         line.Skip(5).Select(w => w.Text));
 
                     yield return new Operation
                     {
-                        Account = Account,
+                        Account = account,
                         Amount = new Money(value, currency),
                         Description = description,
                         DateTime = dateTime

@@ -31,7 +31,8 @@ namespace PdfExtractor.Parsers
                     DateTime = DateTime.ParseExact(tokens[0].Trim(), "dd.MM.yyyy", null),
                     Amount = Money.FromString(tokens[1].Trim()),
                     Description = tokens[2].Trim(),
-                    Category = tokens[3].Trim()
+                    Category = tokens[3].Trim(),
+                    Account = Path.GetFileNameWithoutExtension(path)
                 };
             }
         }
