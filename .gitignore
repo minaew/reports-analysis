@@ -9,3 +9,5 @@
 Tests/Data.cs
 *launchSettings.json
 /categ-view-repeat.ps1
+
+*.pyc

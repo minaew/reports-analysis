@@ -1,8 +1,8 @@
-     | parsing | account identity | movements dates range |
-arar | +
-tink | +
-sber | +
-manu | +
-denz | +
-zirt | +
-expp | +
+     | parsing | account identity | movements dates range
+arar | +       |                  | 
+tink | +       |                  | 
+sber | +       |                  | 
+denz | +       |                  | 
+zirt | +       |                  | 
+expp | +       | +                | -
+manu | +       | -                | -
