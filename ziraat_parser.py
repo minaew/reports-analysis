@@ -1,12 +1,10 @@
 import sys
-import os
 import openpyxl
 import fix_fill
 
 sys.stdout.reconfigure(encoding='utf-8')
 path = sys.argv[1]
-try:
-    new_path = fix_fill.fix_fill(path)
+with fix_fill.fix_fill(path) as new_path:
     # data start from A13
     # columns: date, invoice no, explanation, transaction amount, balance
     book = openpyxl.load_workbook(new_path)
@@ -17,5 +15,3 @@ try:
                      "Description": sheet.cell(row, 2).value,
                      "Amount": str(sheet.cell(row, 4).value) + " try"}
         print(str(operation).replace("'", "\""))
-finally:
-    os.remove(new_path)

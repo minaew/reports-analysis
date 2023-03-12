@@ -129,7 +129,7 @@ namespace PdfExtractor.Models
 
         public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)
         {
-            throw new NotImplementedException();
+            writer.WriteStringValue(value.ToString("dd.MM.yyyy HH:mm"));
         }
     }
 
@@ -148,7 +148,7 @@ namespace PdfExtractor.Models
 
         public override void Write(Utf8JsonWriter writer, Money value, JsonSerializerOptions options)
         {
-            throw new NotImplementedException();
+            writer.WriteStringValue($"{value.Value} {value.Currency}");
         }
     }
 }
