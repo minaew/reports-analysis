@@ -9,11 +9,11 @@ using PdfExtractor.Helpers;
 
 namespace PdfExtractor.Parsers
 {
-    public class AraratParser : IParser
+    public class AraratParser : IParser, IIdentifier
     {
         private readonly Regex _dateRegex = new Regex(@"\d{2}\.\d{2}\.\d{4}", RegexOptions.Compiled);
 
-        public IEnumerable<Operation> Parse(string path)
+        public string Identify(string path)
         {
             using var document = PdfDocument.Open(path);
 
@@ -25,7 +25,14 @@ namespace PdfExtractor.Parsers
             firstPageLine = firstPageLines[4].Item2; // MINAEV ALEKSEI- քարտ
             var name = firstPageLine.Substring(0, firstPageLine.Length - "- քարտ".Length);
 
-            var account = $"ararat {accountNumber} {name}";
+            return $"ararat {accountNumber} {name}";
+        }
+
+        public IEnumerable<Operation> Parse(string path)
+        {
+            var account = Identify(path);
+
+            using var document = PdfDocument.Open(path);
 
             foreach (var page in document.GetPages())
             {

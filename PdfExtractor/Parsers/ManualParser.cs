@@ -12,9 +12,11 @@ namespace PdfExtractor.Parsers
         public IEnumerable<Operation> Parse(string path)
         {
             using var file = File.OpenText(path);
+            var line = file.ReadLine(); // todo: range
+
             while (true)
             {
-                var line = file.ReadLine();
+                line = file.ReadLine();
                 if (string.IsNullOrEmpty(line))
                 {
                     yield break;

@@ -7,4 +7,9 @@ namespace PdfExtractor
     {
         IEnumerable<Operation> Parse(string path);
     }
+
+    public interface IIdentifier
+    {
+        string? Identify(string path);
+    }
 }

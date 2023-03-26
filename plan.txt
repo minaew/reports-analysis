@@ -5,4 +5,4 @@ sber | +       | todo             | todo                  | todo
 denz | +       | +                | todo                  | todo
 zirt | +       | +                | todo                  | todo
 expp | +       | +                | -                     | +
-manu | +       | +                | -                     | +
+manu | +       | -                | -                     | +

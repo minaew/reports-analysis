@@ -8,7 +8,7 @@ using PdfExtractor.Models;
 
 namespace PdfExtractor.Parsers
 {
-    public class ExpensesAppParser : IParser
+    public class ExpensesAppParser : IParser, IIdentifier
     {
         public IEnumerable<Operation> Parse(string path)
         {
@@ -31,6 +31,12 @@ namespace PdfExtractor.Parsers
             );
         }
 
+        public string? Identify(string path)
+        {
+            using var stream = File.OpenRead(path);
+            return JsonSerializer.Deserialize<Movements>(stream)?.label;
+        }
+
 #pragma warning disable IDE1006 // Naming Styles
         public class Movements
         {
@@ -44,12 +50,12 @@ namespace PdfExtractor.Parsers
         public class Transaction
         {
             public double amount { get; set; }
-            
+
             [JsonConverter(typeof(DateConverter))]
             public DateTime date { get; set; }
-            
+
             public string? payee { get; set; }
-            
+
             public string? category { get; set; }
         }
 #pragma warning restore IDE1006 // Naming Styles
@@ -60,7 +66,7 @@ namespace PdfExtractor.Parsers
             {
                 return DateTime.ParseExact(reader.GetString() ?? string.Empty, "dd.MM.yyyy", null);
             }
-        
+
             public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)
             {
                 throw new NotImplementedException();

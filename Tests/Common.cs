@@ -15,7 +15,7 @@ namespace Tests
             CountInternal(new AraratParser(), Data.Ararat, 77);
             CountInternal(new TinkoffParser(), Data.MahaSeptember, 47);
             CountInternal(new SberParser(), Data.Sber, 28);
-            CountInternal(new ManualParser(), Data.Manual, 20);
+            CountInternal(new ManualParser(), Data.Manual, 29);
             CountInternal(new DenizParser(), Data.Deniz, 104);
             CountInternal(new ZiraatParser(), Data.Ziraat, 11);
             CountInternal(new ExpensesAppParser(), Data.Vacation, 40);
