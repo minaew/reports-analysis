@@ -31,10 +31,10 @@ namespace PdfExtractor.Parsers
             );
         }
 
-        public string? Identify(string path)
+        public string Identify(string path)
         {
             using var stream = File.OpenRead(path);
-            return JsonSerializer.Deserialize<Movements>(stream)?.label;
+            return JsonSerializer.Deserialize<Movements>(stream)?.label ?? throw new InvalidOperationException("error serializing movements");
         }
 
 #pragma warning disable IDE1006 // Naming Styles

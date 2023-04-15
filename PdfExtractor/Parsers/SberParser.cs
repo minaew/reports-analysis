@@ -10,7 +10,7 @@ namespace PdfExtractor.Parsers
 {
     public class SberParser : IParser, IIdentifier
     {
-        public string? Identify(string path)
+        public string Identify(string path)
         {
             var client = PdfHelper.GetContent(path)[4];
             var identityWords = PdfHelper.GetWords(path)

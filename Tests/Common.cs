@@ -43,5 +43,12 @@ namespace Tests
             Assert.Equal(new SberParser().Identify(Data.Sber),
                          Data.LehaSberIdentity);
         }
+
+        [Fact]
+        public void Range()
+        {
+            Assert.Equal(new DateRange(new DateTime(2022, 10, 1), new DateTime(2022, 12, 11)),
+                         new MetaRanger().GetRange(Data.Ararat));
+        }
     }
 }

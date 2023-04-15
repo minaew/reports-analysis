@@ -12,4 +12,9 @@ namespace PdfExtractor
     {
         string? Identify(string path);
     }
+
+    public interface IRanger
+    {
+        DateRange GetRange(string path);
+    }
 }

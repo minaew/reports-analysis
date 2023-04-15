@@ -4,7 +4,7 @@ namespace PdfExtractor
 {
     public class MetaIdentifier : IIdentifier
     {
-        public string? Identify(string path)
+        public string Identify(string path)
         {
             switch (FormatDetector.GetFormat(path))
             {

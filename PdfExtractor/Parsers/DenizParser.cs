@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using PdfExtractor.Helpers;
 using PdfExtractor.Models;
@@ -20,9 +21,9 @@ namespace PdfExtractor.Parsers
             return base.Parse(path).Select(o => o.WithAccount(account));
         }
 
-        public string? Identify(string path)
+        public string Identify(string path)
         {
-            return ExcelHelper.GetString(path, 3, 1);
+            return ExcelHelper.GetString(path, 3, 1) ?? throw new InvalidOperationException("string is null");
         }
     }
 }

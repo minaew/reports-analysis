@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.CommandLine;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.Json;
 using PdfExtractor;
+using PdfExtractor.Models;
 using PdfExtractor.Parsers;
 
 namespace CLI
@@ -26,9 +28,14 @@ namespace CLI
             identifyCommand.AddOption(movementsOption);
             identifyCommand.SetHandler(Identify, movementsOption);
 
+            var coverageCommand = new Command("coverage", "movements coverage");
+            coverageCommand.AddOption(movementsOption);
+            coverageCommand.SetHandler(CalculateCoverage, movementsOption);
+
             var root = new RootCommand("some financial parsers and analyzers");
             root.AddCommand(categorizeCommand);
             root.AddCommand(identifyCommand);
+            root.AddCommand(coverageCommand);
 
             return root.Invoke(args);
         }
@@ -76,6 +83,40 @@ namespace CLI
             {
                 var id = new MetaIdentifier().Identify(path);
                 Console.WriteLine($"{path} -> {id}");
+            }
+        }
+
+        private static void CalculateCoverage(string path)
+        {
+            IEnumerable<string> files;
+            if (Directory.Exists(path))
+            {
+                files = Directory.EnumerateFiles(path, "*.*", SearchOption.AllDirectories).ToList();
+            }
+            else
+            {
+                files = new[] { path };
+            }
+
+            var ranges = new Dictionary<string, DateRange>();
+            foreach (var file in files)
+            {
+                var id = new MetaIdentifier().Identify(file);
+                var range = new MetaRanger().GetRange(file);
+                if (ranges.ContainsKey(id))
+                {
+                    var oldRange = ranges[id];
+                    oldRange = oldRange.Add(range);
+                }
+                else
+                {
+                    ranges[id] = range;
+                }
+            }
+
+            foreach (var entry in ranges)
+            {
+                Console.WriteLine($"{entry.Key.PadRight(50)}:\t{entry.Value}");
             }
         }
     }

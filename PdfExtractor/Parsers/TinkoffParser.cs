@@ -14,7 +14,7 @@ namespace PdfExtractor.Parsers
         private const string DateTimePattern = "dd.MM.yy HH:mm";
         private const string DatePattern = "dd.MM.yy";
 
-        public string? Identify(string path)
+        public string Identify(string path)
         {
             var content = PdfHelper.GetContent(path);
             return content[0] + " " + content[5].Split(' ').Last();

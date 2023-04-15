@@ -28,5 +28,8 @@ namespace PdfExtractor.Helpers
 
             return value;
         }
+
+        public static string GetStringOrThrow(string path, int row, int column) =>
+            GetString(path, row, column) ?? throw new InvalidOperationException("string is null");
     }
 }

@@ -9,9 +9,19 @@ using PdfExtractor.Helpers;
 
 namespace PdfExtractor.Parsers
 {
-    public class AraratParser : IParser, IIdentifier
+    public class AraratParser : IParser, IIdentifier, IRanger
     {
         private readonly Regex _dateRegex = new Regex(@"\d{2}\.\d{2}\.\d{4}", RegexOptions.Compiled);
+
+        public DateRange GetRange(string path)
+        {
+            var rangeString = PdfHelper.GetContent(path)[6];
+            var match = Regex.Match(rangeString, @"\d{2}.\d{2}.\d{4} 00:00-\d{2}.\d{2}.\d{4} 00:00");
+            var from = match.Value.Substring(0, 10);
+            var to = match.Value.Substring(17, 10);
+            return new DateRange(DateTime.ParseExact(from, "dd.MM.yyyy", null),
+                                 DateTime.ParseExact(to, "dd.MM.yyyy", null));
+        }
 
         public string Identify(string path)
         {

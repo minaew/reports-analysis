@@ -19,9 +19,6 @@ namespace PdfExtractor.Parsers
             return base.Parse(path).Select(o => o.WithAccount(account));
         }
 
-        public string? Identify(string path)
-        {
-            return ExcelHelper.GetString(path, 7, 2);
-        }
+        public string Identify(string path) => ExcelHelper.GetStringOrThrow(path, 7, 2);
     }
 }
