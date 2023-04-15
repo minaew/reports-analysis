@@ -8,8 +8,18 @@ using PdfExtractor.Helpers;
 
 namespace PdfExtractor.Parsers
 {
-    public class SberParser : IParser
+    public class SberParser : IParser, IIdentifier
     {
+        public string? Identify(string path)
+        {
+            var client = PdfHelper.GetContent(path)[4];
+            var identityWords = PdfHelper.GetWords(path)
+                                         .SkipWhile(w => w.BoundingBox.Bottom > 662.86)
+                                         .TakeWhile(w => w.BoundingBox.Right < 228);
+
+            return client + " " + PdfHelper.Join(identityWords);
+        }
+
         public IEnumerable<Operation> Parse(string path)
         {
             using var document = PdfDocument.Open(path);
@@ -70,7 +80,7 @@ namespace PdfExtractor.Parsers
                         .ToList();
                     var description = string.Join(" ", descriptionWords.Select(w => w.Text));
 
-                    foreach (var suffix in new[] {" Продолжение на следующей", " на счёт кредитной карты"})
+                    foreach (var suffix in new[] { " Продолжение на следующей", " на счёт кредитной карты" })
                     {
                         var index = description.IndexOf(suffix);
                         if (index != -1)

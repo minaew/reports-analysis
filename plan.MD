@@ -2,7 +2,7 @@
 |-----|---------|------------------|-----------------------|----------------|
 |arar | +       | +                | todo                  | +              |
 |tink | +       | +                | todo                  | todo           |
-|sber | +       | todo             | todo                  | todo           |
+|sber | +       | +                | todo                  | todo           |
 |denz | +       | +                | todo                  | todo           |
 |zirt | +       | +                | todo                  | todo           |
 |expp | +       | +                | -                     | +              |

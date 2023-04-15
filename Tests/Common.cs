@@ -36,5 +36,12 @@ namespace Tests
         {
             Assert.Equal(1, parser.Parse(path).Count(predicate));
         }
+
+        [Fact]
+        public void Identity()
+        {
+            Assert.Equal(new SberParser().Identify(Data.Sber),
+                         Data.LehaSberIdentity);
+        }
     }
 }

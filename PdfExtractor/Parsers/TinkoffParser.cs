@@ -16,14 +16,14 @@ namespace PdfExtractor.Parsers
 
         public string? Identify(string path)
         {
-            var content = GetContent(path);
+            var content = PdfHelper.GetContent(path);
             return content[0] + " " + content[5].Split(' ').Last();
         }
 
         public IEnumerable<Operation> Parse(string path)
         {
             var operation = new Operation();
-            foreach (var line in GetContent(path).Skip(HeaderHeight))
+            foreach (var line in PdfHelper.GetContent(path).Skip(HeaderHeight))
             {
                 if (line.StartsWith("Операции по карте") ||
                     line.StartsWith("Дата и время") ||
@@ -65,18 +65,6 @@ namespace PdfExtractor.Parsers
                     operation.Description += " " + line;
                 }
             }
-        }
-
-        private static IReadOnlyList<string> GetContent(string path)
-        {
-            using var document = PdfDocument.Open(path);
-
-            return document.GetPages()
-                .Select(page => page.GetWords())
-                .Select(words => PdfHelper.GetLines(words)
-                                          .Select(w => w.Item2))
-                .SelectMany(lines => lines)
-                .ToList();
         }
 
         private static Operation ParseAfterDate(string line)

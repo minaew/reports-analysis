@@ -116,7 +116,7 @@ namespace PdfExtractor.Helpers
             yield return new Word(letters);
         }
 
-        public static bool PdfPointEquals(PdfPoint point1, PdfPoint point2)
+        private static bool PdfPointEquals(PdfPoint point1, PdfPoint point2)
         {
             return DoublesEquals(point1.X, point2.X) && DoublesEquals(point1.Y, point2.Y);
         }
@@ -151,10 +151,27 @@ namespace PdfExtractor.Helpers
 
         public static string GetFirstWord(string path) => GetWords(path).FirstOrDefault()?.Text ?? string.Empty;
 
-        private static IReadOnlyList<Word> GetWords(string path)
+        public static IReadOnlyList<string> GetContent(string path)
+        {
+            using var document = PdfDocument.Open(path);
+
+            return document.GetPages()
+                .Select(page => page.GetWords())
+                .Select(words => PdfHelper.GetLines(words)
+                                          .Select(w => w.Item2))
+                .SelectMany(lines => lines)
+                .ToList();
+        }
+
+        public static IReadOnlyList<Word> GetWords(string path)
         {
             using var document = PdfDocument.Open(path);
             return document.GetPages().SelectMany(p => p.GetWords()).ToList();
+        }
+
+        public static string Join(IEnumerable<Word> words, string separator = " ")
+        {
+            return string.Join(" ", words.Select(w => w.Text));
         }
     }
 }

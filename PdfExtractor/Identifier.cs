@@ -20,6 +20,8 @@ namespace PdfExtractor
                     return new TinkoffParser().Identify(path);
                 case Models.Format.RawText:
                     return "manual";
+                case Models.Format.Sber:
+                    return new SberParser().Identify(path);
                 default:
                     return "";
             }
