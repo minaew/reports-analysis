@@ -16,6 +16,10 @@ namespace PdfExtractor
                     return new ZiraatParser().Identify(path);
                 case Models.Format.ExpencesApp:
                     return new ExpensesAppParser().Identify(path);
+                case Models.Format.Tinkoff:
+                    return new TinkoffParser().Identify(path);
+                case Models.Format.RawText:
+                    return "manual";
                 default:
                     return "";
             }

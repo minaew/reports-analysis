@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using Xunit;
+using PdfExtractor;
 using PdfExtractor.Parsers;
 using PdfExtractor.Models;
 
@@ -69,6 +70,20 @@ namespace Tests
 
             var outcome = values.Where(v => v < 0).Sum();
             Assert.Equal(-56277.11, outcome);
+        }
+
+        [Fact]
+        public void Identity()
+        {
+            IdentityInternal(new TinkoffParser(), "02-tink-leha-2022-10.pdf", Data.LehaTinkIdentity);
+            IdentityInternal(new TinkoffParser(), "02-tink-leha-2022-11.pdf", Data.LehaTinkIdentity);
+            IdentityInternal(new TinkoffParser(), "06-tink-maha-2022-09.pdf", Data.MahaTinkIdentity);
+            IdentityInternal(new TinkoffParser(), "06-tink-maha-2022-10.pdf", Data.MahaTinkIdentity);
+        }
+
+        private static void IdentityInternal(IIdentifier identifier, string name, string identity)
+        {
+            Assert.Equal(identifier.Identify(Path.Combine(Data.Root, name)), identity);
         }
     }
 }

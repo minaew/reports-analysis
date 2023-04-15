@@ -8,11 +8,17 @@ using PdfExtractor.Helpers;
 
 namespace PdfExtractor.Parsers
 {
-    public class TinkoffParser : IParser
+    public class TinkoffParser : IParser, IIdentifier
     {
         private const int HeaderHeight = 16;
         private const string DateTimePattern = "dd.MM.yy HH:mm";
         private const string DatePattern = "dd.MM.yy";
+
+        public string? Identify(string path)
+        {
+            var content = GetContent(path);
+            return content[0] + " " + content[5].Split(' ').Last();
+        }
 
         public IEnumerable<Operation> Parse(string path)
         {
@@ -61,7 +67,7 @@ namespace PdfExtractor.Parsers
             }
         }
 
-        private static IReadOnlyCollection<string> GetContent(string path)
+        private static IReadOnlyList<string> GetContent(string path)
         {
             using var document = PdfDocument.Open(path);
 
