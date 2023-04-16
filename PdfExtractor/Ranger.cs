@@ -10,6 +10,7 @@ namespace PdfExtractor
         private IRanger GetRanger(string path) => FormatDetector.GetFormat(path) switch
         {
             Format.Ararat => new AraratParser(),
+            Format.Tinkoff => new TinkoffParser(),
             _ => new InvalidParser()
         };
     }

@@ -106,7 +106,7 @@ namespace CLI
                 if (ranges.ContainsKey(id))
                 {
                     var oldRange = ranges[id];
-                    oldRange = oldRange.Add(range);
+                    ranges[id] = oldRange.Add(range);
                 }
                 else
                 {
@@ -116,7 +116,7 @@ namespace CLI
 
             foreach (var entry in ranges)
             {
-                Console.WriteLine($"{entry.Key.PadRight(50)}:\t{entry.Value}");
+                Console.WriteLine($"{entry.Key.PadRight(50)}{entry.Value}");
             }
         }
     }

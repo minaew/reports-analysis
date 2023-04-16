@@ -2,13 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using UglyToad.PdfPig;
 using PdfExtractor.Models;
 using PdfExtractor.Helpers;
+using System.Text.RegularExpressions;
 
 namespace PdfExtractor.Parsers
 {
-    public class TinkoffParser : IParser, IIdentifier
+    public class TinkoffParser : IParser, IIdentifier, IRanger
     {
         private const int HeaderHeight = 16;
         private const string DateTimePattern = "dd.MM.yy HH:mm";
@@ -85,6 +85,26 @@ namespace PdfExtractor.Parsers
                 Amount = new Money(amount, "rub"),
                 Description = line.Substring(border + 1, line.Length - border - 1).Trim()
             };
+        }
+
+        public DateRange GetRange(string path)
+        {
+            var rangeString = PdfHelper.GetContent(path).Where(l => l.StartsWith("Баланс")).Take(2).ToList();
+            var fromString = rangeString[0];
+            var from = Regex.Match(fromString, @"\d{2}.\d{2}.\d{4}");
+            if (string.IsNullOrEmpty(from.Value))
+            {
+                throw new ParsingException($"string {fromString} does not contain date");
+            }
+            var toString = rangeString[1];
+            var to = Regex.Match(toString, @"\d{2}.\d{2}.\d{4}");
+            if (string.IsNullOrEmpty(to.Value))
+            {
+                throw new ParsingException($"string {toString} does not contain date");
+            }
+
+            return new DateRange(DateTime.ParseExact(from.Value, "dd.MM.yyyy", null),
+                                 DateTime.ParseExact(to.Value, "dd.MM.yyyy", null));
         }
     }
 }

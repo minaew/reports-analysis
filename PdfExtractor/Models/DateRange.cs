@@ -27,6 +27,8 @@ namespace PdfExtractor.Models
             To > range.To ? To : range.To
         );
 
-        public override string ToString() => From.ToString("dd.MM.yyyy") + "-" + To.ToString("dd.MM.yyyy");
+        public override string ToString() => this.Equals(default(DateRange))
+            ? string.Empty
+            : From.ToString("dd.MM.yyyy") + "-" + To.ToString("dd.MM.yyyy");
     }
 }

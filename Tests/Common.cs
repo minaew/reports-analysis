@@ -49,6 +49,12 @@ namespace Tests
         {
             Assert.Equal(new DateRange(new DateTime(2022, 10, 1), new DateTime(2022, 12, 11)),
                          new MetaRanger().GetRange(Data.Ararat));
+
+            Assert.Equal(new DateRange(new DateTime(2022, 8, 11), new DateTime(2022, 9, 10)),
+                         new MetaRanger().GetRange(Data.MahaSeptember));
+
+            Assert.Equal(new DateRange(new DateTime(2022, 10, 2), new DateTime(2022, 11, 1)),
+                         new MetaRanger().GetRange(Data.Tink));
         }
     }
 }
