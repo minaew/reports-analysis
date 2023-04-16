@@ -2,13 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using PdfExtractor.Models;
-using PdfExtractor.Helpers;
 using System.Text.RegularExpressions;
+using ReportAnalysis.Core.Models;
+using ReportAnalysis.Core.Helpers;
+using ReportAnalysis.Core.Interfaces;
 
-namespace PdfExtractor.Parsers
+namespace ReportAnalysis.Core.Parsers
 {
-    public class TinkoffParser : IParser, IIdentifier, IRanger
+    class TinkoffParser : IParser, IIdentifier, IRanger
     {
         private const int HeaderHeight = 16;
         private const string DateTimePattern = "dd.MM.yy HH:mm";

@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 
-namespace Viewer.Wpf
+namespace ReportAnalysis.Viewer.Wpf
 {
     [ValueConversion(typeof(int), typeof(double))]
     public class LevelToWidthConverter : IValueConverter

@@ -1,9 +1,10 @@
-using PdfExtractor.Models;
-using PdfExtractor.Parsers;
+using ReportAnalysis.Core.Interfaces;
+using ReportAnalysis.Core.Models;
+using ReportAnalysis.Core.Parsers;
 
-namespace PdfExtractor
+namespace ReportAnalysis.Core
 {
-    public class MetaRanger : IRanger
+    public class Ranger : IRanger
     {
         public DateRange GetRange(string path) => GetRanger(path).GetRange(path);
 
@@ -11,7 +12,7 @@ namespace PdfExtractor
         {
             Format.Ararat => new AraratParser(),
             Format.Tinkoff => new TinkoffParser(),
-            _ => new InvalidParser()
+            _ => new StubParser()
         };
     }
 }

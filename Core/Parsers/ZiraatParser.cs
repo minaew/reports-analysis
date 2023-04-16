@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using PdfExtractor.Helpers;
-using PdfExtractor.Models;
+using ReportAnalysis.Core.Helpers;
+using ReportAnalysis.Core.Interfaces;
+using ReportAnalysis.Core.Models;
 
-namespace PdfExtractor.Parsers
+namespace ReportAnalysis.Core.Parsers
 {
-    public class ZiraatParser : PythonParser, IIdentifier
+    class ZiraatParser : PythonParser, IIdentifier
     {
         public ZiraatParser() : base("ziraat_parser.py")
         {

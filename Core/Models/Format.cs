@@ -1,4 +1,4 @@
-namespace PdfExtractor.Models
+namespace ReportAnalysis.Core.Models
 {
     public enum Format
     {

@@ -1,6 +1,6 @@
 using System;
 
-namespace PdfExtractor.Models
+namespace ReportAnalysis.Core.Models
 {
     public struct DateRange
     {

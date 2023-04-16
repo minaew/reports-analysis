@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using PdfExtractor.Models;
+using ReportAnalysis.Core.Models;
 
-namespace CLI
+namespace ReportAnalysis.CLI
 {
     public class Root
     {

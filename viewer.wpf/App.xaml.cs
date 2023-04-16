@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace Viewer.Wpf
+namespace ReportAnalysis.Viewer.Wpf
 {
     public partial class App
     {

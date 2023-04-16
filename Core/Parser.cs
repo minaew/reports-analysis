@@ -1,15 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using PdfExtractor.Models;
+using ReportAnalysis.Core.Interfaces;
+using ReportAnalysis.Core.Models;
+using ReportAnalysis.Core.Parsers;
 
-namespace PdfExtractor.Parsers
+namespace ReportAnalysis.Core
 {
-    public class MetaParser : IParser
+    public class Parser : IParser
     {
         private readonly ICategories _categories;
 
-        public MetaParser(ICategories categories)
+        public Parser(ICategories categories)
         {
             _categories = categories;
         }

@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using PdfExtractor.Helpers;
-using PdfExtractor.Models;
+using ReportAnalysis.Core.Helpers;
+using ReportAnalysis.Core.Interfaces;
+using ReportAnalysis.Core.Models;
 
-namespace PdfExtractor.Parsers
+namespace ReportAnalysis.Core.Parsers
 {
-    public class DenizParser : PythonParser, IIdentifier
+    class DenizParser : PythonParser, IIdentifier
     {
         public DenizParser() : base("deniz_parser.py")
         {

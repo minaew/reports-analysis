@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace PdfExtractor.Helpers
+namespace ReportAnalysis.Core.Helpers
 {
     internal static class ExcelHelper
     {
@@ -13,7 +13,7 @@ namespace PdfExtractor.Helpers
                 Arguments = $"get_string_from_excel.py \"{path}\" \"{row}\" \"{column}\"",
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
-                WorkingDirectory = "C:\\Users\\manai\\source\\repos\\reports-analysis\\"
+                WorkingDirectory = "C:\\Users\\manai\\source\\repos\\reports-analysis\\" // FIXME
             });
             if (process == null) throw new InvalidOperationException();
 

@@ -2,11 +2,11 @@ using System;
 using System.IO;
 using System.Linq;
 using Xunit;
-using PdfExtractor;
-using PdfExtractor.Parsers;
-using PdfExtractor.Models;
+using ReportAnalysis.Core.Parsers;
+using ReportAnalysis.Core.Models;
+using ReportAnalysis.Core.Interfaces;
 
-namespace Tests
+namespace ReportAnalysis.Tests
 {
     public class Tinkoff
     {

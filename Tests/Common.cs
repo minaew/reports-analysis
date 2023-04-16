@@ -1,11 +1,12 @@
 using System;
 using System.Linq;
 using Xunit;
-using PdfExtractor;
-using PdfExtractor.Parsers;
-using PdfExtractor.Models;
+using ReportAnalysis.Core;
+using ReportAnalysis.Core.Parsers;
+using ReportAnalysis.Core.Models;
+using ReportAnalysis.Core.Interfaces;
 
-namespace Tests
+namespace ReportAnalysis.Tests
 {
     public class Common
     {
@@ -48,13 +49,13 @@ namespace Tests
         public void Range()
         {
             Assert.Equal(new DateRange(new DateTime(2022, 10, 1), new DateTime(2022, 12, 11)),
-                         new MetaRanger().GetRange(Data.Ararat));
+                         new Ranger().GetRange(Data.Ararat));
 
             Assert.Equal(new DateRange(new DateTime(2022, 8, 11), new DateTime(2022, 9, 10)),
-                         new MetaRanger().GetRange(Data.MahaSeptember));
+                         new Ranger().GetRange(Data.MahaSeptember));
 
             Assert.Equal(new DateRange(new DateTime(2022, 10, 2), new DateTime(2022, 11, 1)),
-                         new MetaRanger().GetRange(Data.Tink));
+                         new Ranger().GetRange(Data.Tink));
         }
     }
 }

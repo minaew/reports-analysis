@@ -1,22 +1,22 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using PdfExtractor.Models;
+using ReportAnalysis.Core.Models;
 
-namespace Viewer.Wpf
+namespace ReportAnalysis.Viewer.Wpf
 {
     internal interface ITreeNode
     {
         int ID { get; }
 
         AggregatedMoney Money { get; }
-        
+
         string Title { get; }
 
         ICollection<ITreeNode> SubCollection { get; }
 
         int Level { get; }
     }
-    
+
     internal class InnerNode : ITreeNode
     {
         public int ID { get; set; }
@@ -34,7 +34,7 @@ namespace Viewer.Wpf
                 return money;
             }
         }
-        
+
         public string Title { get; set; } = string.Empty;
 
         public ICollection<ITreeNode> SubCollection { get; } = new ObservableCollection<ITreeNode>();
@@ -51,9 +51,9 @@ namespace Viewer.Wpf
         }
 
         public int ID { get; }
-        
+
         public AggregatedMoney Money { get; }
-        
+
         public string Title { get; }
 
         public ICollection<ITreeNode> SubCollection { get; } = new List<ITreeNode>();

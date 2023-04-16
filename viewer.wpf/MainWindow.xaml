@@ -1,12 +1,10 @@
-﻿<Window x:Class="Viewer.Wpf.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Viewer.Wpf"
-        xmlns:core="clr-namespace:PdfExtractor.Models;assembly=PdfExtractor"
-        mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+﻿<Window x:Class="ReportAnalysis.Viewer.Wpf.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="clr-namespace:ReportAnalysis.Viewer.Wpf"
+    xmlns:core="clr-namespace:ReportAnalysis.Core.Models;assembly=ReportAnalysis.Core" mc:Ignorable="d" Title="MainWindow" Height="450" Width="800">
     <Window.Resources>
         <local:Category2BackgroundConverter x:Key="Category2BackgroundConverter"/>
         <local:LevelToWidthConverter x:Key="LevelToWidthConverter"/>
@@ -15,11 +13,9 @@
         <TabItem Header="Tree">
             <TreeView ItemsSource="{Binding Tree}">
                 <TreeView.ItemTemplate>
-                    <HierarchicalDataTemplate DataType="{x:Type local:ITreeNode}"
-                                      ItemsSource="{Binding SubCollection}">
+                    <HierarchicalDataTemplate DataType="{x:Type local:ITreeNode}" ItemsSource="{Binding SubCollection}">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding Title}"
-                                       Width="{Binding Level, Converter={StaticResource LevelToWidthConverter}}"/>
+                            <TextBlock Text="{Binding Title}" Width="{Binding Level, Converter={StaticResource LevelToWidthConverter}}"/>
                             <TextBlock Text="{Binding Money}"/>
                         </StackPanel>
                     </HierarchicalDataTemplate>
@@ -32,39 +28,25 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <StackPanel Orientation="Horizontal"
-                            Grid.Row="0">
-                    <CheckBox Content="n/a only"
-                              IsChecked="{Binding IsNaOnly}"
-                              Margin="10"/>
-                    <TextBlock Text="{Binding Count}"
-                               VerticalAlignment="Center"
-                               Margin="10"/>
+                <StackPanel Orientation="Horizontal" Grid.Row="0">
+                    <CheckBox Content="n/a only" IsChecked="{Binding IsNaOnly}" Margin="10"/>
+                    <TextBlock Text="{Binding Count}" VerticalAlignment="Center" Margin="10"/>
                 </StackPanel>
 
-                <DataGrid ItemsSource="{Binding List}"
-                          AutoGenerateColumns="False"
-                          LoadingRow="DataGrid_OnLoadingRow"
-                          Grid.Row="1">
+                <DataGrid ItemsSource="{Binding List}" AutoGenerateColumns="False" LoadingRow="DataGrid_OnLoadingRow" Grid.Row="1">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="DateTime"
-                                            Binding="{Binding DateTime, StringFormat={}{0:dd.MM.yyyy HH:mm}}"/>
-                        <DataGridTextColumn Header="Value"
-                                            Binding="{Binding Amount.Value}"/>
-                        <DataGridTextColumn Header="Currency"
-                                            Binding="{Binding Amount.Currency}"/>
+                        <DataGridTextColumn Header="DateTime" Binding="{Binding DateTime, StringFormat={}{0:dd.MM.yyyy HH:mm}}"/>
+                        <DataGridTextColumn Header="Value" Binding="{Binding Amount.Value}"/>
+                        <DataGridTextColumn Header="Currency" Binding="{Binding Amount.Currency}"/>
                         <DataGridTemplateColumn Header="Category">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate DataType="core:Operation">
-                                    <TextBlock Text="{Binding Category}"
-                                               Background="{Binding Converter={StaticResource Category2BackgroundConverter}}"/>
+                                    <TextBlock Text="{Binding Category}" Background="{Binding Converter={StaticResource Category2BackgroundConverter}}"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTextColumn Header="Description"
-                                            Binding="{Binding Description}"/>
-                        <DataGridTextColumn Header="Account"
-                                            Binding="{Binding Account}"/>
+                        <DataGridTextColumn Header="Description" Binding="{Binding Description}"/>
+                        <DataGridTextColumn Header="Account" Binding="{Binding Account}"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </Grid>

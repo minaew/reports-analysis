@@ -2,14 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text.Json;
-using PdfExtractor.Models;
+using ReportAnalysis.Core.Interfaces;
+using ReportAnalysis.Core.Models;
 
-namespace PdfExtractor.Parsers
+namespace ReportAnalysis.Core.Parsers
 {
-    public abstract class PythonParser : IParser
+    abstract class PythonParser : IParser
     {
         private readonly string _python = "python";
-        private readonly string _workingDirectory = "C:\\Users\\manai\\source\\repos\\reports-analysis\\";
+        private readonly string _workingDirectory = "C:\\Users\\manai\\source\\repos\\reports-analysis\\"; // fixme
         private readonly string _script;
 
         protected PythonParser(string script)

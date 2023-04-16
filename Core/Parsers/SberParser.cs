@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using UglyToad.PdfPig;
-using PdfExtractor.Models;
-using PdfExtractor.Helpers;
+using ReportAnalysis.Core.Models;
+using ReportAnalysis.Core.Helpers;
+using ReportAnalysis.Core.Interfaces;
 
-namespace PdfExtractor.Parsers
+namespace ReportAnalysis.Core.Parsers
 {
-    public class SberParser : IParser, IIdentifier
+    class SberParser : IParser, IIdentifier
     {
         public string Identify(string path)
         {

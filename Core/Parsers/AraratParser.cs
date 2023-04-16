@@ -4,12 +4,13 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using UglyToad.PdfPig;
-using PdfExtractor.Models;
-using PdfExtractor.Helpers;
+using ReportAnalysis.Core.Models;
+using ReportAnalysis.Core.Helpers;
+using ReportAnalysis.Core.Interfaces;
 
-namespace PdfExtractor.Parsers
+namespace ReportAnalysis.Core.Parsers
 {
-    public class AraratParser : IParser, IIdentifier, IRanger
+    class AraratParser : IParser, IIdentifier, IRanger
     {
         private readonly Regex _dateRegex = new Regex(@"\d{2}\.\d{2}\.\d{4}", RegexOptions.Compiled);
 

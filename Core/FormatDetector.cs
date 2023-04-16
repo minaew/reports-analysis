@@ -1,10 +1,10 @@
 using System.IO;
-using PdfExtractor.Helpers;
-using PdfExtractor.Models;
+using ReportAnalysis.Core.Helpers;
+using ReportAnalysis.Core.Models;
 
-namespace PdfExtractor
+namespace ReportAnalysis.Core
 {
-    public class FormatDetector
+    class FormatDetector
     {
         public static Format GetFormat(string path) => Path.GetExtension(path) switch
         {

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
-using PdfExtractor.Models;
+using ReportAnalysis.Core.Models;
 
-namespace Viewer.Wpf
+namespace ReportAnalysis.Viewer.Wpf
 {
     internal class MainModel
     {

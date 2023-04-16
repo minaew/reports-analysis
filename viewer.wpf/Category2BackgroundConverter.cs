@@ -2,15 +2,15 @@
 using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Media;
-using PdfExtractor.Models;
+using ReportAnalysis.Core.Models;
 
-namespace Viewer.Wpf
+namespace ReportAnalysis.Viewer.Wpf
 {
     public class Category2BackgroundConverter : IValueConverter
     {
         private readonly Brush _unknownCategoryBrush = new SolidColorBrush(Colors.Salmon);
         private readonly Brush _knownCategoryBrush = new SolidColorBrush(Colors.White);
-        
+
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is Operation operation)

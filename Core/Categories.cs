@@ -4,15 +4,11 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
-using PdfExtractor.Models;
+using ReportAnalysis.Core.Interfaces;
+using ReportAnalysis.Core.Models;
 
-namespace PdfExtractor
+namespace ReportAnalysis.Core
 {
-    public interface ICategories
-    {
-        string GetCategory(Operation operation);
-    }
-
     public class Categories : ICategories
     {
         private readonly IDictionary<string, ICollection<string>>? _tree;

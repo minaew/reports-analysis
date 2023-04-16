@@ -1,8 +1,9 @@
-using PdfExtractor.Parsers;
+using ReportAnalysis.Core.Interfaces;
+using ReportAnalysis.Core.Parsers;
 
-namespace PdfExtractor
+namespace ReportAnalysis.Core
 {
-    public class MetaIdentifier : IIdentifier
+    public class Identifier : IIdentifier
     {
         public string Identify(string path)
         {

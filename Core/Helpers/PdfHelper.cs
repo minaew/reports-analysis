@@ -4,9 +4,9 @@ using System.Linq;
 using UglyToad.PdfPig.Content;
 using UglyToad.PdfPig.Core;
 using UglyToad.PdfPig;
-using PdfExtractor.Models;
+using ReportAnalysis.Core.Models;
 
-namespace PdfExtractor.Helpers
+namespace ReportAnalysis.Core.Helpers
 {
     internal class PdfHelper
     {

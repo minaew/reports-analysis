@@ -4,11 +4,12 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using PdfExtractor.Models;
+using ReportAnalysis.Core.Interfaces;
+using ReportAnalysis.Core.Models;
 
-namespace PdfExtractor.Parsers
+namespace ReportAnalysis.Core.Parsers
 {
-    public class ExpensesAppParser : IParser, IIdentifier
+    class ExpensesAppParser : IParser, IIdentifier
     {
         public IEnumerable<Operation> Parse(string path)
         {

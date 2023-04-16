@@ -5,11 +5,11 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.Json;
-using PdfExtractor;
-using PdfExtractor.Models;
-using PdfExtractor.Parsers;
+using ReportAnalysis.Core;
+using ReportAnalysis.Core.Interfaces;
+using ReportAnalysis.Core.Models;
 
-namespace CLI
+namespace ReportAnalysis.CLI
 {
     class Program
     {
@@ -48,7 +48,7 @@ namespace CLI
                 return;
             }
 
-            var operations = new MetaParser(CreateCategories(categoriesPath, cases)).Parse(movements);
+            var operations = new Parser(CreateCategories(categoriesPath, cases)).Parse(movements);
 
             var options = new JsonSerializerOptions { WriteIndented = true };
             var content = JsonSerializer.Serialize(operations.OrderBy(o => o.DateTime), options);
@@ -81,7 +81,7 @@ namespace CLI
             }
             else
             {
-                var id = new MetaIdentifier().Identify(path);
+                var id = new Identifier().Identify(path);
                 Console.WriteLine($"{path} -> {id}");
             }
         }
@@ -101,8 +101,8 @@ namespace CLI
             var ranges = new Dictionary<string, DateRange>();
             foreach (var file in files)
             {
-                var id = new MetaIdentifier().Identify(file);
-                var range = new MetaRanger().GetRange(file);
+                var id = new Identifier().Identify(file);
+                var range = new Ranger().GetRange(file);
                 if (ranges.ContainsKey(id))
                 {
                     var oldRange = ranges[id];

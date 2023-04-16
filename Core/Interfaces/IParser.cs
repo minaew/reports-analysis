@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using PdfExtractor.Models;
+using ReportAnalysis.Core.Models;
 
-namespace PdfExtractor
+namespace ReportAnalysis.Core.Interfaces
 {
     public interface IParser
     {

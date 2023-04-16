@@ -1,6 +1,6 @@
 using System;
 
-namespace PdfExtractor
+namespace ReportAnalysis.Core
 {
     public class ParsingException : Exception
     {

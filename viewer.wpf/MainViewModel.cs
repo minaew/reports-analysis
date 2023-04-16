@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using PdfExtractor.Models;
+using ReportAnalysis.Core.Models;
 
-namespace Viewer.Wpf
+namespace ReportAnalysis.Viewer.Wpf
 {
     internal class MainViewModel : INotifyPropertyChanged
     {

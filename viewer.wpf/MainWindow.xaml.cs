@@ -1,12 +1,10 @@
 ﻿using System.Windows.Controls;
-using System.Windows.Media;
-using PdfExtractor.Models;
 
-namespace Viewer.Wpf
+namespace ReportAnalysis.Viewer.Wpf
 {
     public partial class MainWindow
     {
-        
+
         public MainWindow()
         {
             InitializeComponent();
