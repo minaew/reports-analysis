@@ -4,6 +4,6 @@
 |tink | +       | +                | +                     | todo           |
 |sber | +       | +                | +                     | todo           |
 |denz | +       | +                | +                     | todo           |
-|zirt | +       | +                | todo                  | todo           |
+|zirt | +       | +                | +                     | todo           |
 |expp | +       | +                | todo                  | +              |
 |manu | +       | +                | todo                  | +              |
