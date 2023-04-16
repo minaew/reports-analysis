@@ -48,17 +48,15 @@ namespace ReportAnalysis.Tests
         [Fact]
         public void Range()
         {
-            Assert.Equal(new DateRange(new DateTime(2022, 10, 1), new DateTime(2022, 12, 11)),
-                         new Ranger().GetRange(Data.Ararat));
+            RangeInternal("01.10.2022-11.12.2022", Data.Ararat);
+            RangeInternal("11.08.2022-10.09.2022", Data.MahaSeptember);
+            RangeInternal("02.10.2022-01.11.2022", Data.Tink);
+            RangeInternal("01.10.2022-09.12.2022", Data.Sber);
+        }
 
-            Assert.Equal(new DateRange(new DateTime(2022, 8, 11), new DateTime(2022, 9, 10)),
-                         new Ranger().GetRange(Data.MahaSeptember));
-
-            Assert.Equal(new DateRange(new DateTime(2022, 10, 2), new DateTime(2022, 11, 1)),
-                         new Ranger().GetRange(Data.Tink));
-
-            Assert.Equal(new DateRange(new DateTime(2022, 10, 1), new DateTime(2022, 12, 9)),
-                         new Ranger().GetRange(Data.Sber));
+        private void RangeInternal(string range, string path)
+        {
+            Assert.Equal(DateRange.Parse(range), new Ranger().GetRange(path));
         }
     }
 }

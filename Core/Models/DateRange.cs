@@ -18,6 +18,10 @@ namespace ReportAnalysis.Core.Models
             }
         }
 
+        public static DateRange Parse(string input) => new DateRange(
+            DateTime.ParseExact(input.Substring(0, 10), "dd.MM.yyyy", null),
+            DateTime.ParseExact(input.Substring(11, 10), "dd.MM.yyyy", null));
+
         public DateTime From { get; }
 
         public DateTime To { get; }
