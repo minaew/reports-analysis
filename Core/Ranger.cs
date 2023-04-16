@@ -12,6 +12,7 @@ namespace ReportAnalysis.Core
         {
             Format.Ararat => new AraratParser(),
             Format.Tinkoff => new TinkoffParser(),
+            Format.Sber => new SberParser(),
             _ => new StubParser()
         };
     }

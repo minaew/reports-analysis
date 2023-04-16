@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 using UglyToad.PdfPig;
 using ReportAnalysis.Core.Models;
 using ReportAnalysis.Core.Helpers;
@@ -9,8 +10,16 @@ using ReportAnalysis.Core.Interfaces;
 
 namespace ReportAnalysis.Core.Parsers
 {
-    class SberParser : IParser, IIdentifier
+    class SberParser : IParser, IIdentifier, IRanger
     {
+        public DateRange GetRange(string path)
+        {
+            var rangeString = PdfHelper.GetContent(path).Single(l => l.StartsWith("Итого"));
+            var v = Regex.Match(rangeString, @"с \d{2}.\d{2}.\d{4} по \d{2}.\d{2}.\d{4}").Value;
+            return new DateRange(DateTime.ParseExact(v.Substring(2, 10), "dd.MM.yyyy", null),
+                                 DateTime.ParseExact(v.Substring(16, 10), "dd.MM.yyyy", null));
+        }
+
         public string Identify(string path)
         {
             var client = PdfHelper.GetContent(path)[4];

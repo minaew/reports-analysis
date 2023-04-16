@@ -56,6 +56,9 @@ namespace ReportAnalysis.Tests
 
             Assert.Equal(new DateRange(new DateTime(2022, 10, 2), new DateTime(2022, 11, 1)),
                          new Ranger().GetRange(Data.Tink));
+
+            Assert.Equal(new DateRange(new DateTime(2022, 10, 1), new DateTime(2022, 12, 9)),
+                         new Ranger().GetRange(Data.Sber));
         }
     }
 }
