@@ -9,7 +9,7 @@ using ReportAnalysis.Core.Models;
 
 namespace ReportAnalysis.Core.Parsers
 {
-    class ExpensesAppParser : IParser, IIdentifier
+    class ExpensesAppParser : IParser, IIdentifier, IRanger
     {
         public IEnumerable<Operation> Parse(string path)
         {
@@ -36,6 +36,12 @@ namespace ReportAnalysis.Core.Parsers
         {
             using var stream = File.OpenRead(path);
             return JsonSerializer.Deserialize<Movements>(stream)?.label ?? throw new InvalidOperationException("error serializing movements");
+        }
+
+        public DateRange GetRange(string path)
+        {
+            var dates = Parse(path).Select(o => o.DateTime).ToList();
+            return new DateRange(dates.Min(), dates.Max());
         }
 
 #pragma warning disable IDE1006 // Naming Styles

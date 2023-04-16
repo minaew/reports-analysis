@@ -15,6 +15,8 @@ namespace ReportAnalysis.Core
             Format.Sber => new SberParser(),
             Format.Deniz => new DenizParser(),
             Format.Ziraat => new ZiraatParser(),
+            Format.RawText => new ManualParser(),
+            Format.ExpencesApp => new ExpensesAppParser(),
             _ => new StubParser()
         };
     }

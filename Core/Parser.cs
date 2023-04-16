@@ -9,7 +9,11 @@ namespace ReportAnalysis.Core
 {
     public class Parser : IParser
     {
-        private readonly ICategories _categories;
+        private readonly ICategories _categories = new EmptyCategories();
+
+        public Parser()
+        {
+        }
 
         public Parser(ICategories categories)
         {

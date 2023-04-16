@@ -5,5 +5,5 @@
 |sber | +       | +                | +                     | todo           |
 |denz | +       | +                | +                     | todo           |
 |zirt | +       | +                | +                     | todo           |
-|expp | +       | +                | todo                  | +              |
-|manu | +       | +                | todo                  | +              |
+|expp | +       | +                | +                     | +              |
+|manu | +       | +                | +                     | +              |

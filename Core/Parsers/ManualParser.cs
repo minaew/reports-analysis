@@ -1,23 +1,28 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using ReportAnalysis.Core.Interfaces;
 using ReportAnalysis.Core.Models;
 
 namespace ReportAnalysis.Core.Parsers
 {
-    class ManualParser : IParser
+    class ManualParser : IParser, IRanger
     {
         private const string Separator = ",";
+
+        public DateRange GetRange(string path)
+        {
+            var dates = Parse(path).Select(o => o.DateTime).ToList();
+            return new DateRange(dates.Min(), dates.Max());
+        }
 
         public IEnumerable<Operation> Parse(string path)
         {
             using var file = File.OpenText(path);
-            var line = file.ReadLine(); // todo: range
-
             while (true)
             {
-                line = file.ReadLine();
+                var line = file.ReadLine();
                 if (string.IsNullOrEmpty(line))
                 {
                     yield break;

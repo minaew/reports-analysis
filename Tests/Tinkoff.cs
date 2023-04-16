@@ -2,9 +2,8 @@ using System;
 using System.IO;
 using System.Linq;
 using Xunit;
-using ReportAnalysis.Core.Parsers;
+using ReportAnalysis.Core;
 using ReportAnalysis.Core.Models;
-using ReportAnalysis.Core.Interfaces;
 
 namespace ReportAnalysis.Tests
 {
@@ -14,8 +13,7 @@ namespace ReportAnalysis.Tests
         // 11.08.22 09:39 11.08.22 1.00 ₽ 1.00 ₽ Оплата в Mos.Transport MOSKVA RUS
         public void TrivialOutcome()
         {
-            var parser = new TinkoffParser();
-            var operations = parser.Parse(Data.MahaSeptember).ToList();
+            var operations = new Parser().Parse(Data.MahaSeptember).ToList();
 
             Assert.Equal(operations[3],
             new Operation
@@ -30,8 +28,7 @@ namespace ReportAnalysis.Tests
         // 10.09.22 10.09.22 +155.57 ₽ +155.57 ₽ Проценты на остаток
         public void TrivialIncome()
         {
-            var parser = new TinkoffParser();
-            var operations = parser.Parse(Data.MahaSeptember);
+            var operations = new Parser().Parse(Data.MahaSeptember);
 
             Assert.Contains(new Operation
             {
@@ -46,8 +43,7 @@ namespace ReportAnalysis.Tests
         //                                           СБЕРБАНК
         public void MultiLine()
         {
-            var parser = new TinkoffParser();
-            var operations = parser.Parse(Data.MahaSeptember).ToList();
+            var operations = new Parser().Parse(Data.MahaSeptember).ToList();
 
             Assert.Contains(new Operation
             {
@@ -60,7 +56,7 @@ namespace ReportAnalysis.Tests
         [Fact]
         public void Totals()
         {
-            var values = new TinkoffParser()
+            var values = new Parser()
                 .Parse(Data.MahaSeptember)
                 .Select(o => o.Amount.Value)
                 .ToList();
@@ -75,15 +71,15 @@ namespace ReportAnalysis.Tests
         [Fact]
         public void Identity()
         {
-            IdentityInternal(new TinkoffParser(), "02-tink-leha-2022-10.pdf", Data.LehaTinkIdentity);
-            IdentityInternal(new TinkoffParser(), "02-tink-leha-2022-11.pdf", Data.LehaTinkIdentity);
-            IdentityInternal(new TinkoffParser(), "06-tink-maha-2022-09.pdf", Data.MahaTinkIdentity);
-            IdentityInternal(new TinkoffParser(), "06-tink-maha-2022-10.pdf", Data.MahaTinkIdentity);
+            IdentityInternal("02-tink-leha-2022-10.pdf", Data.LehaTinkIdentity);
+            IdentityInternal("02-tink-leha-2022-11.pdf", Data.LehaTinkIdentity);
+            IdentityInternal("06-tink-maha-2022-09.pdf", Data.MahaTinkIdentity);
+            IdentityInternal("06-tink-maha-2022-10.pdf", Data.MahaTinkIdentity);
         }
 
-        private static void IdentityInternal(IIdentifier identifier, string name, string identity)
+        private static void IdentityInternal(string name, string identity)
         {
-            Assert.Equal(identifier.Identify(Path.Combine(Data.Root, name)), identity);
+            Assert.Equal(new Identifier().Identify(Path.Combine(Data.Root, name)), identity);
         }
     }
 }
