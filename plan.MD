@@ -3,7 +3,7 @@
 |arar | +       | +                | +                     | +              |
 |tink | +       | +                | +                     | todo           |
 |sber | +       | +                | +                     | todo           |
-|denz | +       | +                | todo                  | todo           |
+|denz | +       | +                | +                     | todo           |
 |zirt | +       | +                | todo                  | todo           |
 |expp | +       | +                | todo                  | +              |
 |manu | +       | +                | todo                  | +              |

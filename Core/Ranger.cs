@@ -13,6 +13,7 @@ namespace ReportAnalysis.Core
             Format.Ararat => new AraratParser(),
             Format.Tinkoff => new TinkoffParser(),
             Format.Sber => new SberParser(),
+            Format.Deniz => new DenizParser(),
             _ => new StubParser()
         };
     }

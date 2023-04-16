@@ -7,7 +7,7 @@ using ReportAnalysis.Core.Models;
 
 namespace ReportAnalysis.Core.Parsers
 {
-    class DenizParser : PythonParser, IIdentifier
+    class DenizParser : PythonParser, IIdentifier, IRanger
     {
         public DenizParser() : base("deniz_parser.py")
         {
@@ -25,6 +25,12 @@ namespace ReportAnalysis.Core.Parsers
         public string Identify(string path)
         {
             return ExcelHelper.GetString(path, 3, 1) ?? throw new InvalidOperationException("string is null");
+        }
+
+        public DateRange GetRange(string path)
+        {
+            var rangeString = ExcelHelper.GetStringOrThrow(path, 4, 1);
+            return DateRange.Parse(rangeString.Replace(" ", ""));
         }
     }
 }

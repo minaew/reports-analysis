@@ -52,6 +52,7 @@ namespace ReportAnalysis.Tests
             RangeInternal("11.08.2022-10.09.2022", Data.MahaSeptember);
             RangeInternal("02.10.2022-01.11.2022", Data.Tink);
             RangeInternal("01.10.2022-09.12.2022", Data.Sber);
+            RangeInternal("12.06.2022-12.12.2022", Data.Deniz);
         }
 
         private void RangeInternal(string range, string path)
