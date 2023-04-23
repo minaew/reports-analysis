@@ -21,7 +21,12 @@ namespace ReportAnalysis.Core.Parsers
             return base.Parse(path).Select(o => o.WithAccount(account));
         }
 
-        public string Identify(string path) => ExcelHelper.GetStringOrThrow(path, 7, 2);
+        public string Identify(string path)
+        {
+            var iban = ExcelHelper.GetStringOrThrow(path, 7, 2);
+            var client = ExcelHelper.GetStringOrThrow(path, 4, 0);
+            return $"ziraat {client.Substring(5)} {iban}";
+        }
 
         public DateRange GetRange(string path)
         {

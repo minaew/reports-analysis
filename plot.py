@@ -12,18 +12,54 @@ class item:
     label: str
 
 
+def create_month_start(year: int, month: int) -> np.datetime64:
+    month_str = str(month).rjust(2, '0')
+    return np.datetime64(f'{year}-{month_str}-01')
+
+
+def get_month_start(datetime: np.datetime64) -> np.datetime64:
+    y = datetime.astype('datetime64[Y]').astype(int) + 1970
+    m = datetime.astype('datetime64[M]').astype(int) % 12 + 1
+    return create_month_start(y, m)
+
+
+def get_month_incremented(datetime: np.datetime64) -> np.datetime64:
+    y = datetime.astype('datetime64[Y]').astype(int) + 1970
+    m = datetime.astype('datetime64[M]').astype(int) % 12 + 1
+    if m == 12:
+        return create_month_start(y + 1, 1)
+    else:
+        return create_month_start(y, m + 1)
+
+
 def plot_coverage(items):
     _, ax = plt.subplots()
+    plt.grid()
 
     ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%b'))
     for label in ax.get_xticklabels(which='major'):
         label.set(rotation=30, horizontalalignment='right')
 
     y = 0
+    min_start = items[0].start  # fixme
+    max_end = items[0].end  # fixme
     for item in items:
+        if item.start < min_start:
+            min_start = item.start
+        if item.end > max_end:
+            max_end = item.end
+
         y = y + 1
         ax.plot([np.datetime64(item.start), np.datetime64(item.end)], [y, y], 'o-')
         ax.annotate(item.label, xy=(np.datetime64(item.start), y + 0.025))
+
+    # ticks
+    current = get_month_start(min_start)
+    ticks = [current]
+    while current < max_end:
+        current = get_month_incremented(current)
+        ticks.append(current)
+    ax.set_xticks(ticks)
 
     plt.show()
 

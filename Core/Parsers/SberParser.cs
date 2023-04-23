@@ -27,7 +27,7 @@ namespace ReportAnalysis.Core.Parsers
                                          .SkipWhile(w => w.BoundingBox.Bottom > 662.86)
                                          .TakeWhile(w => w.BoundingBox.Right < 228);
 
-            return client + " " + PdfHelper.Join(identityWords);
+            return $"sber {client} {PdfHelper.Join(identityWords)}";
         }
 
         public IEnumerable<Operation> Parse(string path)

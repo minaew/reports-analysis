@@ -24,7 +24,9 @@ namespace ReportAnalysis.Core.Parsers
 
         public string Identify(string path)
         {
-            return ExcelHelper.GetString(path, 3, 1) ?? throw new InvalidOperationException("string is null");
+            var client = ExcelHelper.GetStringOrThrow(path, 1, 1);
+            var iban = ExcelHelper.GetStringOrThrow(path, 3, 1);
+            return $"deniz {client} {iban}";
         }
 
         public DateRange GetRange(string path)

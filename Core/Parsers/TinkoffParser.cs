@@ -18,7 +18,7 @@ namespace ReportAnalysis.Core.Parsers
         public string Identify(string path)
         {
             var content = PdfHelper.GetContent(path);
-            return content[0] + " " + content[5].Split(' ').Last();
+            return $"tink {content[0]} {content[5].Split(' ').Last()}";
         }
 
         public IEnumerable<Operation> Parse(string path)
