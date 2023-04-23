@@ -32,6 +32,7 @@ namespace ReportAnalysis.Core.Parsers
 
         public IEnumerable<Operation> Parse(string path)
         {
+            var account = Identify(path);
             using var document = PdfDocument.Open(path);
             foreach (var page in document.GetPages())
             {
@@ -141,7 +142,8 @@ namespace ReportAnalysis.Core.Parsers
                     {
                         Amount = new Money(amounts[i], "rub"),
                         Description = descriptions[i],
-                        DateTime = dateTimes[i].Item2
+                        DateTime = dateTimes[i].Item2,
+                        Account = account
                     };
                 }
             }

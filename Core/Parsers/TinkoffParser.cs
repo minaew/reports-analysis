@@ -23,6 +23,7 @@ namespace ReportAnalysis.Core.Parsers
 
         public IEnumerable<Operation> Parse(string path)
         {
+            var account = Identify(path);
             var operation = new Operation();
             foreach (var line in PdfHelper.GetContent(path).Skip(HeaderHeight))
             {
@@ -35,7 +36,7 @@ namespace ReportAnalysis.Core.Parsers
 
                 if (line.StartsWith("Адреса банкоматов"))
                 {
-                    yield return operation;
+                    yield return operation.WithAccount(account);
                 }
 
                 DateTime dateTime;
@@ -44,7 +45,7 @@ namespace ReportAnalysis.Core.Parsers
                 {
                     if (!operation.Equals(default(Operation)))
                     {
-                        yield return operation;
+                        yield return operation.WithAccount(account);
                     }
 
                     operation = ParseAfterDate(new string(line.Skip(DateTimePattern.Length + 9).ToArray()));
@@ -55,7 +56,7 @@ namespace ReportAnalysis.Core.Parsers
                 {
                     if (!operation.Equals(default(Operation)))
                     {
-                        yield return operation;
+                        yield return operation.WithAccount(account);
                     }
 
                     operation = ParseAfterDate(new string(line.Skip(DatePattern.Length + 9).ToArray()));
