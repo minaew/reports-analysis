@@ -84,4 +84,39 @@ def get_coverage():
     return items
 
 
-plot_coverage(get_coverage())
+def get_expences():
+    process = subprocess.run(['dotnet', 'run', '--project', '.\\CLI\\CLI.csproj', 'sum', '--operations-path', 'D:\\finances\\log.json'],
+                             capture_output=True, text=True)
+    expences = []
+    for line in process.stdout.split('\n'):
+        if len(line) == 0:
+            continue
+        parts = line.split(':')
+        month = parts[0].split('.')[0]
+        year = parts[0].split('.')[1]
+        m = np.datetime64(f'{year}-{month}')
+        sums = {}
+        for c in parts[1].split(','):
+            category = c.split('=')[0]
+            sum = float(c.split('=')[1])
+            sums[category] = sum
+        expences.append((m, sums))
+    return expences
+
+
+def plot_expences(expences):
+    for expence in expences:
+        categories = []
+        sums = []
+        for category in expence[1]:
+            categories.append(category)
+            sum = expence[1][category]
+            sums.append(-sum)
+        _, ax = plt.subplots()
+        ax.pie(sums, labels=categories, autopct='%1.1f%%')
+        plt.title(expence[0])
+        plt.show()
+
+
+# plot_coverage(get_coverage())
+plot_expences(get_expences())

@@ -32,10 +32,16 @@ namespace ReportAnalysis.CLI
             coverageCommand.AddOption(movementsOption);
             coverageCommand.SetHandler(CalculateCoverage, movementsOption);
 
+            var summariesCommand = new Command("sum", "categories summaries");
+            var operationsPathOption = new Option<string>(name: "--operations-path", () => string.Empty);
+            summariesCommand.AddOption(operationsPathOption);
+            summariesCommand.SetHandler(GetSummaries, operationsPathOption);
+
             var root = new RootCommand("some financial parsers and analyzers");
             root.AddCommand(categorizeCommand);
             root.AddCommand(identifyCommand);
             root.AddCommand(coverageCommand);
+            root.AddCommand(summariesCommand);
 
             return root.Invoke(args);
         }
@@ -117,6 +123,23 @@ namespace ReportAnalysis.CLI
             foreach (var entry in ranges)
             {
                 Console.WriteLine($"{entry.Key},{entry.Value.From.ToString("dd.MM.yyyy")},{entry.Value.To.ToString("dd.MM.yyyy")}");
+            }
+        }
+
+        private static void GetSummaries(string operationsPath)
+        {
+            var content = File.ReadAllText(operationsPath);
+            var operations = JsonSerializer.Deserialize<IEnumerable<Operation>>(content) ?? throw new ParsingException();
+            foreach (var period in operations.Where(o => o.Amount.Value < 0)
+                                             .Where(o => o.Category != "transfer")
+                                             .GroupBy(o => o.DateTime.ToString("MM.yyyy")))
+            {
+                var grouped = string.Join(",", period.GroupBy(o => o.Category).Select(cat =>
+                {
+                    var total = cat.Select(o => o.Amount).Select(a => new AggregatedMoney(a)).Select(am => am.TotalRub).Sum();
+                    return $"{cat.Key}={total}";
+                }));
+                Console.WriteLine($"{period.Key}:{grouped}");
             }
         }
     }

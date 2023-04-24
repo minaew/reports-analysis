@@ -37,7 +37,7 @@ namespace ReportAnalysis.Core
 
             _cases = new Dictionary<DateTime, string>(pairs.SelectMany(d => d.Select(p =>
                 new KeyValuePair<DateTime, string>(
-                    DateTime.ParseExact(p.Key, "dd.MM.yyyy HH:mm", CultureInfo.InvariantCulture),
+                    DateTime.ParseExact(p.Key, "dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture),
                     p.Value))));
         }
 
