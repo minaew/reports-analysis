@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Linq;
 using Xunit;
 using ReportAnalysis.Core;
@@ -39,7 +40,16 @@ namespace ReportAnalysis.Tests
         [Fact]
         public void Identity()
         {
-            Assert.Equal(new Identifier().Identify(Data.Sber), Data.LehaSberIdentity);
+            IdentityInternal("03-sber-leha-01102022-09122022.pdf", Data.LehaSberIdentity);
+            IdentityInternal("02-tink-leha-2022-10.pdf", Data.LehaTinkIdentity);
+            IdentityInternal("02-tink-leha-2022-11.pdf", Data.LehaTinkIdentity);
+            IdentityInternal("06-tink-maha-2022-09.pdf", Data.MahaTinkIdentity);
+            IdentityInternal("06-tink-maha-2022-10.pdf", Data.MahaTinkIdentity);
+        }
+
+        private static void IdentityInternal(string name, string identity)
+        {
+            Assert.Equal(new Identifier().Identify(Path.Combine(Data.Root, name)), identity);
         }
 
         [Fact]
@@ -58,6 +68,32 @@ namespace ReportAnalysis.Tests
         private void RangeInternal(string range, string path)
         {
             Assert.Equal(DateRange.Parse(range), new Ranger().GetRange(path));
+        }
+
+        [Fact]
+        public void First()
+        {
+            FirstInternal("16.08.2022 15:49", Data.MahaSeptember);
+        }
+
+        private static void FirstInternal(string date, string path)
+        {
+            var dateTime = DateTime.ParseExact(date, "dd.MM.yyyy HH:mm", null);
+            var firstOperationDate = new Parser().Parse(path).First().DateTime;
+            Assert.Equal(dateTime, firstOperationDate);
+        }
+
+        [Fact]
+        public void Last()
+        {
+            LastInternal("10.09.2022 23:03", Data.MahaSeptember);
+        }
+
+        private static void LastInternal(string date, string path)
+        {
+            var dateTime = DateTime.ParseExact(date, "dd.MM.yyyy HH:mm", null);
+            var firstOperationDate = new Parser().Parse(path).Last().DateTime;
+            Assert.Equal(dateTime, firstOperationDate);
         }
     }
 }

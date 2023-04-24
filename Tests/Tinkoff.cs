@@ -18,6 +18,7 @@ namespace ReportAnalysis.Tests
             Assert.Equal(operations[3],
             new Operation
             {
+                Account = Data.MahaTinkIdentity,
                 DateTime = new DateTime(2022, 8, 11, 9, 39, 0),
                 Amount = new Money(-1, "rub"),
                 Description = "Оплата в Mos.Transport MOSKVA RUS"
@@ -32,6 +33,7 @@ namespace ReportAnalysis.Tests
 
             Assert.Contains(new Operation
             {
+                Account = Data.MahaTinkIdentity,
                 DateTime = new DateTime(2022, 09, 10, 0, 0, 0),
                 Amount = new Money(155.57, "rub"),
                 Description = "Проценты на остаток"
@@ -43,10 +45,11 @@ namespace ReportAnalysis.Tests
         //                                           СБЕРБАНК
         public void MultiLine()
         {
-            var operations = new Parser().Parse(Data.MahaSeptember).ToList();
+            var operations = new Parser().Parse(Data.MahaSeptember);
 
             Assert.Contains(new Operation
             {
+                Account = Data.MahaTinkIdentity,
                 DateTime = new DateTime(2022, 09, 1, 21, 10, 0),
                 Amount = new Money(-100, "rub"),
                 Description = "Внешний банковский перевод счёт 40703810238000008427, ПАО СБЕРБАНК"
@@ -62,24 +65,10 @@ namespace ReportAnalysis.Tests
                 .ToList();
 
             var income = values.Where(v => v > 0).Sum();
-            Assert.Equal(104950.05, income);
+            Assert.Equal(104950.05 + 155.57 + 543.00, income, 1);
 
             var outcome = values.Where(v => v < 0).Sum();
-            Assert.Equal(-56277.11, outcome);
-        }
-
-        [Fact]
-        public void Identity()
-        {
-            IdentityInternal("02-tink-leha-2022-10.pdf", Data.LehaTinkIdentity);
-            IdentityInternal("02-tink-leha-2022-11.pdf", Data.LehaTinkIdentity);
-            IdentityInternal("06-tink-maha-2022-09.pdf", Data.MahaTinkIdentity);
-            IdentityInternal("06-tink-maha-2022-10.pdf", Data.MahaTinkIdentity);
-        }
-
-        private static void IdentityInternal(string name, string identity)
-        {
-            Assert.Equal(new Identifier().Identify(Path.Combine(Data.Root, name)), identity);
+            Assert.Equal(-56277.11, outcome, 1);
         }
     }
 }

@@ -8,21 +8,30 @@ namespace ReportAnalysis.Core.Models
 {
     public struct Operation
     {
-        public string? Account { get; set; }
+        public Operation()
+        {
+            Account = string.Empty;
+            DateTime = default(DateTime);
+            Amount = default(Money);
+            Category = "n/a";
+            Description = string.Empty;
+        }
+
+        public string Account { get; set; }
 
         [JsonConverter(typeof(DateTimeConverter))]
         public DateTime DateTime { get; set; }
 
         public Money Amount { get; set; }
 
-        public string? Category { get; set; }
+        public string Category { get; set; }
 
-        public string? Description { get; set; }
+        public string Description { get; set; }
 
         [JsonIgnore]
         public bool IsUnknownCategory => string.IsNullOrEmpty(Category) || Category == "n/a";
 
-        public Operation WithAccount(string? account)
+        public Operation WithAccount(string account)
         {
             var operation = this;
             operation.Account = account;

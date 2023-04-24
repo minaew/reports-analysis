@@ -47,7 +47,7 @@ namespace ReportAnalysis.Core.Parsers
 #pragma warning disable IDE1006 // Naming Styles
         public class Movements
         {
-            public string? label { get; set; }
+            public string label { get; set; } = string.Empty;
 
             public string? currency { get; set; }
 
@@ -61,9 +61,9 @@ namespace ReportAnalysis.Core.Parsers
             [JsonConverter(typeof(DateConverter))]
             public DateTime date { get; set; }
 
-            public string? payee { get; set; }
+            public string payee { get; set; } = string.Empty;
 
-            public string? category { get; set; }
+            public string category { get; set; } = string.Empty;
         }
 #pragma warning restore IDE1006 // Naming Styles
 

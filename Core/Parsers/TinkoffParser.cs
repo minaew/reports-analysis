@@ -43,7 +43,7 @@ namespace ReportAnalysis.Core.Parsers
                 if (line.Length >= DateTimePattern.Length &&
                     DateTime.TryParseExact(line.Substring(0, DateTimePattern.Length), DateTimePattern, null, DateTimeStyles.None, out dateTime))
                 {
-                    if (!operation.Equals(default(Operation)))
+                    if (!operation.Equals(new Operation()))
                     {
                         yield return operation.WithAccount(account);
                     }
@@ -54,7 +54,7 @@ namespace ReportAnalysis.Core.Parsers
                 else if (line.Length >= DatePattern.Length &&
                     DateTime.TryParseExact(line.Substring(0, DatePattern.Length), DatePattern, null, DateTimeStyles.None, out dateTime))
                 {
-                    if (!operation.Equals(default(Operation)))
+                    if (!operation.Equals(new Operation()))
                     {
                         yield return operation.WithAccount(account);
                     }
