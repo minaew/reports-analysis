@@ -22,17 +22,40 @@ namespace ReportAnalysis.Core
 
         public IEnumerable<Operation> Parse(string path)
         {
+            foreach (var file in GetFilePaths(path))
+            {
+                foreach (var operation in GetParser(file).Parse(file))
+                {
+                    if (operation.IsUnknownCategory)
+                    {
+                        var category = _categories.GetCategory(operation);
+                        var newOperation = operation.WithCategory(category);
+                        yield return newOperation;
+                    }
+                    else
+                    {
+                        yield return operation;
+                    }
+                }
+            }
+        }
+
+        private IEnumerable<string> GetFilePaths(string path)
+        {
             if (new DirectoryInfo(path).Exists)
             {
-                foreach (var operation in Directory.GetFileSystemEntries(path).SelectMany(Parse))
-                {
-                    yield return operation;
-                }
-
-                yield break;
+                return Directory.GetFiles(path, "*.*", SearchOption.AllDirectories);
             }
+            if (new FileInfo(path).Exists)
+            {
+                return new[] { path };
+            }
+            return Enumerable.Empty<string>();
+        }
 
-            IParser parser = FormatDetector.GetFormat(path) switch
+        private IParser GetParser(string path)
+        {
+            return FormatDetector.GetFormat(path) switch
             {
                 Format.Sber => new SberParser(),
                 Format.SberVklad => new SberVkladParser(),
@@ -44,17 +67,6 @@ namespace ReportAnalysis.Core
                 Format.Ziraat => new ZiraatParser(),
                 _ => new StubParser(),
             };
-
-            foreach (var operation in parser.Parse(path))
-            {
-                var newOperation = operation;
-                if (string.IsNullOrEmpty(newOperation.Category))
-                {
-                    newOperation.Category = _categories.GetCategory(operation);
-                }
-
-                yield return newOperation;
-            }
         }
     }
 }

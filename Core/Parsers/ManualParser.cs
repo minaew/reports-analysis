@@ -29,9 +29,14 @@ namespace ReportAnalysis.Core.Parsers
                 }
 
                 var tokens = line.Split(Separator);
-                if (tokens.Length != 4)
+                if (tokens.Length != 4 && tokens.Length != 3)
                 {
                     throw new InvalidOperationException();
+                }
+                var category = string.Empty;
+                if (tokens.Length == 4)
+                {
+                    category = tokens[3].Trim();
                 }
 
                 yield return new Operation
@@ -39,7 +44,7 @@ namespace ReportAnalysis.Core.Parsers
                     DateTime = DateTime.ParseExact(tokens[0].Trim(), "dd.MM.yyyy", null),
                     Amount = Money.FromString(tokens[1].Trim()),
                     Description = tokens[2].Trim(),
-                    Category = tokens[3].Trim(),
+                    Category = category,
                     Account = Path.GetFileNameWithoutExtension(path)
                 };
             }

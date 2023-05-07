@@ -37,6 +37,13 @@ namespace ReportAnalysis.Core.Models
             operation.Account = account;
             return operation;
         }
+
+        public Operation WithCategory(string category)
+        {
+            var operation = this;
+            operation.Category = category;
+            return operation;
+        }
     }
 
     [JsonConverter(typeof(MoneyConverter))]
