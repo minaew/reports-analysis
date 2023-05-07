@@ -37,11 +37,18 @@ namespace ReportAnalysis.CLI
             summariesCommand.AddOption(operationsPathOption);
             summariesCommand.SetHandler(GetSummaries, operationsPathOption);
 
+            var filterCommand = new Command("filter", "filter operations");
+            filterCommand.AddOption(operationsPathOption);
+            var categoryOption = new Option<string>(name: "--category", () => string.Empty);
+            filterCommand.AddOption(categoryOption);
+            filterCommand.SetHandler(Filter, operationsPathOption, categoryOption);
+
             var root = new RootCommand("some financial parsers and analyzers");
             root.AddCommand(categorizeCommand);
             root.AddCommand(identifyCommand);
             root.AddCommand(coverageCommand);
             root.AddCommand(summariesCommand);
+            root.AddCommand(filterCommand);
 
             return root.Invoke(args);
         }
@@ -140,6 +147,33 @@ namespace ReportAnalysis.CLI
                     return $"{cat.Key}={total}";
                 }));
                 Console.WriteLine($"{period.Key}:{grouped}");
+            }
+            // foreach (var period in operations.Where(o => o.Category != "transfer")
+            //                                  .GroupBy(o => o.DateTime.ToString("MM.yyyy")))
+            // {
+            //     var balance = period.Select(o => o.Amount).Select(a => new AggregatedMoney(a)).Select(am => am.TotalRub).Sum();
+            //     var balanceStr = ((int)balance).ToString().PadLeft(10, ' ');
+
+            //     var income = period.Select(o => o.Amount).Select(a => new AggregatedMoney(a)).Select(am => am.TotalRub).Where(t => t > 0).Sum();
+            //     var incomeStr = ((int)income).ToString().PadLeft(10, ' ');
+
+            //     var outcome = period.Select(o => o.Amount).Select(a => new AggregatedMoney(a)).Select(am => am.TotalRub).Where(t => t < 0).Sum();
+            //     var outcomeStr = ((int)outcome).ToString().PadLeft(10, ' ');
+
+            //     var salary = period.Where(o => o.Category == "salary").Select(o => o.Amount).Select(a => new AggregatedMoney(a)).Select(am => am.TotalRub).Where(t => t < 0).Sum();
+            //     var salaryStr = ((int)outcome).ToString().PadLeft(10, ' ');
+
+            //     Console.WriteLine($"{period.Key}:balance={balanceStr}, income={incomeStr}, outcome={outcomeStr}, salary={salaryStr}");
+            // }
+        }
+
+        private static void Filter(string operationsPath, string categoryFilter)
+        {
+            var content = File.ReadAllText(operationsPath);
+            var operations = JsonSerializer.Deserialize<IEnumerable<Operation>>(content) ?? throw new ParsingException();
+            foreach (var operation in operations.Where(o => o.Category.Contains(categoryFilter)))
+            {
+                Console.WriteLine($"{operation.DateTime.Date} {operation.Amount.Value} {operation.Amount.Currency} {operation.Description}");
             }
         }
     }

@@ -30,6 +30,14 @@ namespace ReportAnalysis.Tests
         public void Exists()
         {
             ExistsInternal(Data.Ziraat, o => o.DateTime == new DateTime(2023, 1, 8));
+
+            ExistsInternal(Data.Ararat, o => o.DateTime == new DateTime(2022, 10, 28, 13, 6, 17) &&
+                                             o.Amount.Value == 720500 &&
+                                             o.Amount.Currency == "amd");
+
+            ExistsInternal(Data.Ararat2, o => o.DateTime == new DateTime(2022, 12, 27, 14, 45, 34)
+                                              && o.Amount.Value == 1371300
+                                              && o.Amount.Currency == "amd");
         }
 
         private static void ExistsInternal(string path, Func<Operation, bool> predicate)
@@ -40,11 +48,11 @@ namespace ReportAnalysis.Tests
         [Fact]
         public void Identity()
         {
-            IdentityInternal("03-sber-leha-01102022-09122022.pdf", Data.LehaSberIdentity);
-            IdentityInternal("02-tink-leha-2022-10.pdf", Data.LehaTinkIdentity);
-            IdentityInternal("02-tink-leha-2022-11.pdf", Data.LehaTinkIdentity);
-            IdentityInternal("06-tink-maha-2022-09.pdf", Data.MahaTinkIdentity);
-            IdentityInternal("06-tink-maha-2022-10.pdf", Data.MahaTinkIdentity);
+            IdentityInternal("sber-leha-2022-10-01-2022-12-09.pdf", Data.LehaSberIdentity);
+            IdentityInternal("tink-leha-2022-10.pdf", Data.LehaTinkIdentity);
+            IdentityInternal("tink-leha-2022-11.pdf", Data.LehaTinkIdentity);
+            IdentityInternal("tink-maha-2022-09.pdf", Data.MahaTinkIdentity);
+            IdentityInternal("tink-maha-2022-10.pdf", Data.MahaTinkIdentity);
         }
 
         private static void IdentityInternal(string name, string identity)

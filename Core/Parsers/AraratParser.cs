@@ -45,6 +45,8 @@ namespace ReportAnalysis.Core.Parsers
 
             using var document = PdfDocument.Open(path);
 
+            var incomeColumnHeaderCenter = document.GetPage(1).GetWords().First(w => w.Text == "Մուտք").BoundingBox.Centroid.X;
+
             foreach (var page in document.GetPages())
             {
                 var words = page.GetWords().ToList();
@@ -66,7 +68,7 @@ namespace ReportAnalysis.Core.Parsers
                     var currency = line[2].Text;
 
                     double value;
-                    if (line[3].BoundingBox.Left > 214 && line[3].BoundingBox.Left < 215)
+                    if (line[3].BoundingBox.Left < incomeColumnHeaderCenter && line[3].BoundingBox.Right > incomeColumnHeaderCenter)
                     {
                         value = double.Parse(line[3].Text);
                     }
