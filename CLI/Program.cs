@@ -129,7 +129,7 @@ namespace ReportAnalysis.CLI
 
             foreach (var entry in ranges)
             {
-                Console.WriteLine($"{entry.Key},{entry.Value.From.ToString("dd.MM.yyyy")},{entry.Value.To.ToString("dd.MM.yyyy")}");
+                Console.WriteLine($"{entry.Key},{entry.Value}");
             }
         }
 

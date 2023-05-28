@@ -9,7 +9,7 @@
         <local:Category2BackgroundConverter x:Key="Category2BackgroundConverter"/>
         <local:LevelToWidthConverter x:Key="LevelToWidthConverter"/>
     </Window.Resources>
-    <TabControl SelectedIndex="0">
+    <TabControl SelectedIndex="1">
         <TabItem Header="Tree">
             <TreeView ItemsSource="{Binding Tree}">
                 <TreeView.ItemTemplate>
@@ -23,21 +23,31 @@
             </TreeView>
         </TabItem>
         <TabItem Header="List">
+            <TabItem.Resources>
+                <CollectionViewSource x:Key="Source" Source="{Binding List}" Filter="CollectionViewSource_Filter">
+                    <CollectionViewSource.GroupDescriptions>
+                        <PropertyGroupDescription PropertyName="MonthId"/>
+                    </CollectionViewSource.GroupDescriptions>
+                </CollectionViewSource>
+            </TabItem.Resources>
             <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <StackPanel Orientation="Horizontal" Grid.Row="0">
-                    <CheckBox Content="n/a only" IsChecked="{Binding IsNaOnly}" Margin="10"/>
-                    <TextBlock Text="{Binding Count}" VerticalAlignment="Center" Margin="10"/>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Vertical" Grid.Column="0">
+                    <StackPanel Orientation="Horizontal">
+                        <CheckBox x:Name="IsNAOnlyCheckBox" Content="n/a only" IsChecked="{Binding IsNaOnly}" Margin="10" Checked="NAChecked" Unchecked="NAUnchecked"/>
+                        <TextBlock Text="{Binding Count}" VerticalAlignment="Center" Margin="10"/>
+                    </StackPanel>
+                    <ListBox x:Name="CategoriesListBox" ItemsSource="{Binding Categories}" SelectionMode="Multiple" SelectionChanged="SelectedCategoriesChanged"/>
                 </StackPanel>
 
-                <DataGrid ItemsSource="{Binding List}" AutoGenerateColumns="False" LoadingRow="DataGrid_OnLoadingRow" Grid.Row="1">
+                <DataGrid ItemsSource="{Binding Source={StaticResource Source}}" AutoGenerateColumns="False" LoadingRow="DataGrid_OnLoadingRow" Grid.Column="1">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="DateTime" Binding="{Binding DateTime, StringFormat={}{0:dd.MM.yyyy HH:mm}}"/>
-                        <DataGridTextColumn Header="Value" Binding="{Binding Amount.Value}"/>
-                        <DataGridTextColumn Header="Currency" Binding="{Binding Amount.Currency}"/>
+                        <DataGridTextColumn Header="Value" Binding="{Binding Value}"/>
+                        <DataGridTextColumn Header="Currency" Binding="{Binding Currency}"/>
                         <DataGridTemplateColumn Header="Category">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate DataType="core:Operation">
@@ -48,6 +58,28 @@
                         <DataGridTextColumn Header="Description" Binding="{Binding Description}"/>
                         <DataGridTextColumn Header="Account" Binding="{Binding Account}"/>
                     </DataGrid.Columns>
+                    <DataGrid.GroupStyle>
+                        <GroupStyle>
+                            <GroupStyle.ContainerStyle>
+                                <Style TargetType="{x:Type GroupItem}">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type GroupItem}">
+                                                <Expander IsExpanded="True">
+                                                    <Expander.Header>
+                                                        <TextBlock Text="{Binding Name}"/>
+                                                    </Expander.Header>
+                                                    <Expander.Content>
+                                                        <ItemsPresenter />
+                                                    </Expander.Content>
+                                                </Expander>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </GroupStyle.ContainerStyle>
+                        </GroupStyle>
+                    </DataGrid.GroupStyle>
                 </DataGrid>
             </Grid>
         </TabItem>
