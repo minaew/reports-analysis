@@ -35,26 +35,28 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <StackPanel Orientation="Vertical" Grid.Column="0">
-                    <StackPanel Orientation="Horizontal">
-                        <CheckBox x:Name="IsNAOnlyCheckBox" Content="n/a only" IsChecked="{Binding IsNaOnly}" Margin="10" Checked="NAChecked" Unchecked="NAUnchecked"/>
-                        <TextBlock Text="{Binding Count}" VerticalAlignment="Center" Margin="10"/>
-                    </StackPanel>
-                    <ListBox x:Name="CategoriesListBox" ItemsSource="{Binding Categories}" SelectionMode="Multiple" SelectionChanged="SelectedCategoriesChanged"/>
-                </StackPanel>
+
+                <ListBox x:Name="CategoriesListBox" ItemsSource="{Binding Categories}" SelectionMode="Multiple" SelectionChanged="SelectedCategoriesChanged">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="{Binding Name}"/>
+                                <TextBlock Grid.Column="1" Text="{Binding Count}" HorizontalAlignment="Right"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
 
                 <DataGrid ItemsSource="{Binding Source={StaticResource Source}}" AutoGenerateColumns="False" LoadingRow="DataGrid_OnLoadingRow" Grid.Column="1">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="DateTime" Binding="{Binding DateTime, StringFormat={}{0:dd.MM.yyyy HH:mm}}"/>
                         <DataGridTextColumn Header="Value" Binding="{Binding Value}"/>
                         <DataGridTextColumn Header="Currency" Binding="{Binding Currency}"/>
-                        <DataGridTemplateColumn Header="Category">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate DataType="core:Operation">
-                                    <TextBlock Text="{Binding Category}" Background="{Binding Converter={StaticResource Category2BackgroundConverter}}"/>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Header="Category" Binding="{Binding Category}"/>
                         <DataGridTextColumn Header="Description" Binding="{Binding Description}"/>
                         <DataGridTextColumn Header="Account" Binding="{Binding Account}"/>
                     </DataGrid.Columns>
@@ -80,6 +82,11 @@
                             </GroupStyle.ContainerStyle>
                         </GroupStyle>
                     </DataGrid.GroupStyle>
+                    <DataGrid.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Command="Copy" />
+                        </ContextMenu>
+                    </DataGrid.ContextMenu>
                 </DataGrid>
             </Grid>
         </TabItem>

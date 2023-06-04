@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using ReportAnalysis.Core.Models;
 
 namespace ReportAnalysis.Viewer.Wpf
@@ -9,7 +10,6 @@ namespace ReportAnalysis.Viewer.Wpf
     internal class MainViewModel : INotifyPropertyChanged
     {
         private readonly MainModel _model;
-        private bool _isNaOnly = true;
         private int _count;
 
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -24,21 +24,7 @@ namespace ReportAnalysis.Viewer.Wpf
 
         public ICollection<ITreeNode> Tree { get; } = new ObservableCollection<ITreeNode>();
 
-        // public ICollection<Operation> List { get; } = new ObservableCollection<Operation>();
         public ICollection<OperationViewModel> List { get; } = new ObservableCollection<OperationViewModel>();
-
-        public bool IsNaOnly
-        {
-            get { return _isNaOnly; }
-            set
-            {
-                if (_isNaOnly != value)
-                {
-                    _isNaOnly = value;
-                    UpdateOperationList();
-                }
-            }
-        }
 
         public int Count
         {
@@ -61,9 +47,13 @@ namespace ReportAnalysis.Viewer.Wpf
             foreach (var operation in _model.GetOperationList())
             {
                 List.Add(new OperationViewModel(operation));
-                if (!Categories.Contains(operation.Category))
+                if (!Categories.Any(c => c.Name == operation.Category))
                 {
-                    Categories.Add(operation.Category);
+                    Categories.Add(new CategoryViewModel(operation.Category) { Count = 1 });
+                }
+                else
+                {
+                    Categories.Single(c => c.Name == operation.Category).Count++;
                 }
 
             }
@@ -71,7 +61,7 @@ namespace ReportAnalysis.Viewer.Wpf
             Count = List.Count;
         }
 
-        public ObservableCollection<string> Categories { get; } = new ObservableCollection<string>();
+        public ObservableCollection<CategoryViewModel> Categories { get; } = new ObservableCollection<CategoryViewModel>();
 
         private void UpdateOperationTree()
         {
@@ -109,5 +99,17 @@ namespace ReportAnalysis.Viewer.Wpf
         public string Description { get; }
 
         public string Account { get; }
+    }
+
+    internal class CategoryViewModel
+    {
+        public CategoryViewModel(string name)
+        {
+            Name = name;
+        }
+
+        public string Name { get; }
+
+        public int Count { get; set; }
     }
 }

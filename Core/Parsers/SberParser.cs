@@ -91,7 +91,7 @@ namespace ReportAnalysis.Core.Parsers
                         .ToList();
                     var description = string.Join(" ", descriptionWords.Select(w => w.Text));
 
-                    foreach (var suffix in new[] { " Продолжение на следующей", " на счёт кредитной карты" })
+                    foreach (var suffix in new[] { " Продолжение на следующей", " на счёт кредитной карты", " на счёт дебетовой карты" })
                     {
                         var index = description.IndexOf(suffix);
                         if (index != -1)

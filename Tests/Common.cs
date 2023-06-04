@@ -94,14 +94,22 @@ namespace ReportAnalysis.Tests
         [Fact]
         public void Last()
         {
-            LastInternal("10.09.2022 23:03", Data.MahaSeptember);
+            LastDate("10.09.2022 23:03", Data.MahaSeptember);
+            LastDescription("SBERBANK_ONL@IN_PLATEZ", Data.Sber);
+            LastDescription("Tinkoff Bank", Data.Sber2);
         }
 
-        private static void LastInternal(string date, string path)
+        private static void LastDate(string date, string path)
         {
             var dateTime = DateTime.ParseExact(date, "dd.MM.yyyy HH:mm", null);
             var firstOperationDate = new Parser().Parse(path).Last().DateTime;
             Assert.Equal(dateTime, firstOperationDate);
+        }
+
+        private static void LastDescription(string description, string path)
+        {
+            var lastOperationDescription = new Parser().Parse(path).Last().Description;
+            Assert.Equal(description, lastOperationDescription);
         }
     }
 }

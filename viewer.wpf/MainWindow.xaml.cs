@@ -1,4 +1,4 @@
-﻿using System.Windows;
+﻿using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Data;
 
@@ -25,34 +25,13 @@ namespace ReportAnalysis.Viewer.Wpf
             }
             var item = (OperationViewModel)e.Item;
             e.Accepted = true;
-            if (IsNAOnlyCheckBox.IsChecked == true)
-            {
-                if (item.Category != "n/a")
-                {
-                    e.Accepted = false;
-                }
-            }
+
             if (CategoriesListBox.SelectedItems.Count > 0)
             {
-                if (!CategoriesListBox.SelectedItems.Contains(item.Category))
+                if (!CategoriesListBox.SelectedItems.Cast<CategoryViewModel>().Select(c => c.Name).Contains(item.Category))
                 {
                     e.Accepted = false;
                 }
-            }
-        }
-
-        private void NAChecked(object sender, RoutedEventArgs e)
-        {
-            if (_source != null)
-            {
-                _source.View.Refresh();
-            }
-        }
-        private void NAUnchecked(object sender, RoutedEventArgs e)
-        {
-            if (_source != null)
-            {
-                _source.View.Refresh();
             }
         }
 
