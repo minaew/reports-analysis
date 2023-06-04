@@ -118,5 +118,5 @@ def plot_expences(expences):
         plt.show()
 
 
-plot_coverage(get_coverage())
-# plot_expences(get_expences())
+# plot_coverage(get_coverage())
+plot_expences(get_expences())

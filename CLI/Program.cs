@@ -133,38 +133,38 @@ namespace ReportAnalysis.CLI
             }
         }
 
+        class MonthSummary
+        {
+            public string ID { get; set; } = string.Empty;
+            public IDictionary<string, double> Categories { get; set; } = new Dictionary<string, double>();
+        }
+
         private static void GetSummaries(string operationsPath)
         {
+            var summaries = new List<MonthSummary>();
+
             var content = File.ReadAllText(operationsPath);
             var operations = JsonSerializer.Deserialize<IEnumerable<Operation>>(content) ?? throw new ParsingException();
             foreach (var period in operations.Where(o => o.Amount.Value < 0)
                                              .Where(o => o.Category != "transfer")
                                              .GroupBy(o => o.DateTime.ToString("MM.yyyy")))
             {
-                var grouped = string.Join(",", period.GroupBy(o => o.Category).Select(cat =>
+
+                var summary = new MonthSummary
+                {
+                    ID = period.Key
+                };
+                summary.Categories["all"] = period.Select(o => o.Amount).Select(a => new AggregatedMoney(a)).Select(am => am.TotalRub).Sum();
+
+                foreach (var cat in period.GroupBy(o => o.Category))
                 {
                     var total = cat.Select(o => o.Amount).Select(a => new AggregatedMoney(a)).Select(am => am.TotalRub).Sum();
-                    return $"{cat.Key}={total}";
-                }));
-                Console.WriteLine($"{period.Key}:{grouped}");
+                    summary.Categories[cat.Key] = total;
+                }
+
+                summaries.Add(summary);
             }
-            // foreach (var period in operations.Where(o => o.Category != "transfer")
-            //                                  .GroupBy(o => o.DateTime.ToString("MM.yyyy")))
-            // {
-            //     var balance = period.Select(o => o.Amount).Select(a => new AggregatedMoney(a)).Select(am => am.TotalRub).Sum();
-            //     var balanceStr = ((int)balance).ToString().PadLeft(10, ' ');
-
-            //     var income = period.Select(o => o.Amount).Select(a => new AggregatedMoney(a)).Select(am => am.TotalRub).Where(t => t > 0).Sum();
-            //     var incomeStr = ((int)income).ToString().PadLeft(10, ' ');
-
-            //     var outcome = period.Select(o => o.Amount).Select(a => new AggregatedMoney(a)).Select(am => am.TotalRub).Where(t => t < 0).Sum();
-            //     var outcomeStr = ((int)outcome).ToString().PadLeft(10, ' ');
-
-            //     var salary = period.Where(o => o.Category == "salary").Select(o => o.Amount).Select(a => new AggregatedMoney(a)).Select(am => am.TotalRub).Where(t => t < 0).Sum();
-            //     var salaryStr = ((int)outcome).ToString().PadLeft(10, ' ');
-
-            //     Console.WriteLine($"{period.Key}:balance={balanceStr}, income={incomeStr}, outcome={outcomeStr}, salary={salaryStr}");
-            // }
+            Console.WriteLine(JsonSerializer.Serialize(summaries, new JsonSerializerOptions { WriteIndented = true }));
         }
 
         private static void Filter(string operationsPath, string categoryFilter)
