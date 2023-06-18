@@ -118,5 +118,42 @@ def plot_expences(expences):
         plt.show()
 
 
+@dataclass
+class expences_table:
+    categories: tuple
+    periods: tuple
+    data: list
+
+
+def get_expences_table() -> expences_table:
+    # external call
+    data = [[1, 2],
+            [3, 4]]
+    periods = ('January', 'February')
+    categories = ('food', 'transport')
+    return expences_table(categories, periods, data)
+
+
+def plot_expences_bars(expences_table: expences_table):
+
+    categories = expences_table.categories
+    periods = expences_table.periods
+    data = expences_table.data
+
+    _, ax = plt.subplots()
+    y_offset = np.zeros(len(periods))
+    index = np.arange(len(periods))
+    for row in range(len(categories)):
+        ax.bar(index, data[row], bottom=y_offset, label=categories[row])
+        y_offset = y_offset + data[row]
+
+    ax.legend()
+    ax.set_xticks(index, periods)
+    plt.show()
+
+
 # plot_coverage(get_coverage())
-plot_expences(get_expences())
+# plot_expences(get_expences())
+
+
+plot_expences_bars(get_expences_table())
