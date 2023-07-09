@@ -77,7 +77,7 @@ namespace ReportAnalysis.Core.Parsers
                 .Reverse().TakeWhile(c => char.IsDigit(c) || c == '.' || c == '+').Reverse()
                 .ToArray());
 
-            var amount = double.Parse(amountToken);
+            var amount = double.Parse(amountToken, CultureInfo.InvariantCulture);
             if (!amountToken.StartsWith("+"))
             {
                 amount = -amount;

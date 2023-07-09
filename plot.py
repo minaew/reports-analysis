@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.dates as mdates
 from dataclasses import dataclass
 import subprocess
+import json
 
 
 @dataclass
@@ -129,8 +130,29 @@ def get_expences_table_test() -> expences_table:
     # external call
     data = [[1, 2, 3],
             [3, 4, 5]]
-    periods = ('January', 'February')
-    categories = ('food', 'transport', 'housing')
+    periods = ['January', 'February']
+    categories = ['food', 'transport', 'housing']
+    return expences_table(categories, periods, data)
+
+
+def get_expences_table() -> expences_table:
+    process = subprocess.run(['dotnet', 'run', '--project', '.\\CLI\\CLI.csproj', 'sum', '--operations-path', 'D:\\finances\\log.json'],
+                             capture_output=True, text=True)
+
+    periods = []
+    categories = ['all']
+    data = []
+    for period_info in json.loads(process.stdout):
+        period_id = period_info['ID']
+        periods.append(period_id)
+        period_data = []
+        for key in categories:
+            if key in period_info['Categories']:
+                period_data.append(-period_info['Categories'][key])
+            else:
+                period_data.append(0)
+        data.append(period_data)
+
     return expences_table(categories, periods, data)
 
 
@@ -149,7 +171,7 @@ def plot_expences_bars(expences_table: expences_table):
             column.append(data[row][cat])
 
         rects = ax.bar(index, column, bottom=y_offset, label=categories[cat])
-        ax.bar_label(rects, labels=column)
+        ax.bar_label(rects, fmt='%d')
         y_offset = y_offset + column
 
     ax.legend(ncol=len(categories))
@@ -159,4 +181,5 @@ def plot_expences_bars(expences_table: expences_table):
 
 # plot_coverage(get_coverage())
 # plot_expences(get_expences())
-plot_expences_bars(get_expences_table_test())
+# plot_expences_bars(get_expences_table_test())
+plot_expences_bars(get_expences_table())

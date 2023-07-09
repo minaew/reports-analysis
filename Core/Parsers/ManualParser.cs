@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using ReportAnalysis.Core.Interfaces;
@@ -20,6 +21,20 @@ namespace ReportAnalysis.Core.Parsers
         public IEnumerable<Operation> Parse(string path)
         {
             using var file = File.OpenText(path);
+
+            var header = file.ReadLine();
+            if (string.IsNullOrEmpty(header))
+            {
+                throw new ParsingException("invalid header");
+            }
+            var headerTokens = header.Split(",");
+            if (headerTokens.Length != 2)
+            {
+                throw new ParsingException("invalid header");
+            }
+            var year = int.Parse(headerTokens[0], CultureInfo.InvariantCulture);
+            var currency = headerTokens[1];
+
             while (true)
             {
                 var line = file.ReadLine();
@@ -39,10 +54,15 @@ namespace ReportAnalysis.Core.Parsers
                     category = tokens[3].Trim();
                 }
 
+                var dateTime = DateTime.ParseExact(tokens[0].Trim(), "dd.MM", null);
+                dateTime = new DateTime(year, dateTime.Month, dateTime.Day);
+
+                var amount = Money.FromString(tokens[1].Trim() + " " + currency.Trim());
+
                 yield return new Operation
                 {
-                    DateTime = DateTime.ParseExact(tokens[0].Trim(), "dd.MM.yyyy", null),
-                    Amount = Money.FromString(tokens[1].Trim()),
+                    DateTime = dateTime,
+                    Amount = amount,
                     Description = tokens[2].Trim(),
                     Category = category,
                     Account = Path.GetFileNameWithoutExtension(path)

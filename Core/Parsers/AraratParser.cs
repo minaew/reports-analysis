@@ -70,11 +70,11 @@ namespace ReportAnalysis.Core.Parsers
                     double value;
                     if (line[3].BoundingBox.Left < incomeColumnHeaderCenter && line[3].BoundingBox.Right > incomeColumnHeaderCenter)
                     {
-                        value = double.Parse(line[3].Text);
+                        value = double.Parse(line[3].Text, CultureInfo.InvariantCulture);
                     }
                     else
                     {
-                        value = -double.Parse(line[3].Text);
+                        value = -double.Parse(line[3].Text, CultureInfo.InvariantCulture);
                     }
 
                     var description = string.Join(" ",

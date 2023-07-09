@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -167,7 +168,7 @@ namespace ReportAnalysis.Core.Models
             var tokens = token.Split(' ');
             if (tokens.Length != 2) throw new ParsingException();
 
-            return new Money(double.Parse(tokens[0]), tokens[1]);
+            return new Money(double.Parse(tokens[0], CultureInfo.InvariantCulture), tokens[1]);
         }
 
         public override void Write(Utf8JsonWriter writer, Money value, JsonSerializerOptions options)
