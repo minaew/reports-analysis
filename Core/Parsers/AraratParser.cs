@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using UglyToad.PdfPig;
@@ -22,6 +23,11 @@ namespace ReportAnalysis.Core.Parsers
             var to = match.Value.Substring(17, 10);
             return new DateRange(DateTime.ParseExact(from, "dd.MM.yyyy", null),
                                  DateTime.ParseExact(to, "dd.MM.yyyy", null));
+        }
+
+        public DateRange GetRange(Stream stream)
+        {
+            throw new NotImplementedException();
         }
 
         public string Identify(string path)
@@ -89,6 +95,11 @@ namespace ReportAnalysis.Core.Parsers
                     };
                 }
             }
+        }
+
+        public IEnumerable<Operation> Parse(Stream stream)
+        {
+            throw new NotImplementedException();
         }
     }
 }

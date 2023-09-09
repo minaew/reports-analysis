@@ -15,6 +15,8 @@ namespace ReportAnalysis.Core
             _ => Format.Invalid,
         };
 
+        public static Format GetFormat(Stream stream) => Format.RawText;
+
         private static Format DetectPdfFormat(string path)
         {
             if (PdfHelper.GetFirstWord(path) == "ԱՐԱՐԱՏԲԱՆԿ")

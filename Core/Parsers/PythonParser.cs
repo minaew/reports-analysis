@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Text.Json;
 using ReportAnalysis.Core.Interfaces;
 using ReportAnalysis.Core.Models;
@@ -45,6 +46,11 @@ namespace ReportAnalysis.Core.Parsers
                 var error = process.StandardError.ReadToEnd();
                 throw new ParsingException(error);
             }
+        }
+
+        public IEnumerable<Operation> Parse(Stream stream)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using ReportAnalysis.Core.Helpers;
@@ -33,6 +34,11 @@ namespace ReportAnalysis.Core.Parsers
             var rangeString = ExcelHelper.GetStringOrThrow(path, 5, 0);
             var v = Regex.Match(rangeString, @"\d{2}.\d{2}.\d{4} - \d{2}.\d{2}.\d{4}").Value;
             return DateRange.Parse(v.Replace(" ", ""));
+        }
+
+        public DateRange GetRange(Stream stream)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

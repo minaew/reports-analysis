@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using ReportAnalysis.Core.Models;
@@ -107,6 +108,16 @@ namespace ReportAnalysis.Core.Parsers
 
             return new DateRange(DateTime.ParseExact(from.Value, "dd.MM.yyyy", null),
                                  DateTime.ParseExact(to.Value, "dd.MM.yyyy", null));
+        }
+
+        public IEnumerable<Operation> Parse(Stream stream)
+        {
+            throw new NotImplementedException();
+        }
+
+        public DateRange GetRange(Stream stream)
+        {
+            throw new NotImplementedException();
         }
     }
 }

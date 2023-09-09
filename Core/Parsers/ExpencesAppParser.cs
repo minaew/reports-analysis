@@ -44,6 +44,16 @@ namespace ReportAnalysis.Core.Parsers
             return new DateRange(dates.Min(), dates.Max());
         }
 
+        public IEnumerable<Operation> Parse(Stream stream)
+        {
+            throw new NotImplementedException();
+        }
+
+        public DateRange GetRange(Stream stream)
+        {
+            throw new NotImplementedException();
+        }
+
 #pragma warning disable IDE1006 // Naming Styles
         public class Movements
         {

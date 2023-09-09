@@ -14,15 +14,34 @@ namespace ReportAnalysis.Core.Parsers
 
         public DateRange GetRange(string path)
         {
-            var dates = Parse(path).Select(o => o.DateTime).ToList();
+            using var file = File.OpenText(path);
+            return GetRange(file.BaseStream);
+        }
+
+        public DateRange GetRange(Stream stream)
+        {
+            var dates = Parse(stream).Select(o => o.DateTime).ToList();
             return new DateRange(dates.Min(), dates.Max());
         }
 
         public IEnumerable<Operation> Parse(string path)
         {
-            using var file = File.OpenText(path);
+            var account = Path.GetFileNameWithoutExtension(path);
 
-            var header = file.ReadLine();
+            using var file = File.OpenText(path);
+            foreach (var operation in Parse(file.BaseStream))
+            {
+                var newOperation = operation;
+                newOperation.Account = account;
+                yield return newOperation;
+            }
+        }
+
+        public IEnumerable<Operation> Parse(Stream stream)
+        {
+            var reader = new StreamReader(stream);
+
+            var header = reader.ReadLine();
             if (string.IsNullOrEmpty(header))
             {
                 throw new ParsingException("invalid header");
@@ -37,7 +56,7 @@ namespace ReportAnalysis.Core.Parsers
 
             while (true)
             {
-                var line = file.ReadLine();
+                var line = reader.ReadLine();
                 if (string.IsNullOrEmpty(line))
                 {
                     yield break;
@@ -64,8 +83,7 @@ namespace ReportAnalysis.Core.Parsers
                     DateTime = dateTime,
                     Amount = amount,
                     Description = tokens[2].Trim(),
-                    Category = category,
-                    Account = Path.GetFileNameWithoutExtension(path)
+                    Category = category
                 };
             }
         }

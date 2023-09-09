@@ -15,7 +15,7 @@ namespace ReportAnalysis.Tests
             CountInternal(Data.Ararat, 77);
             CountInternal(Data.MahaSeptember, 47);
             CountInternal(Data.Sber, 28);
-            CountInternal(Data.Manual, 9);
+            CountInternal(MovementSources.GetManual(), 9);
             CountInternal(Data.Deniz, 104);
             CountInternal(Data.Ziraat, 11);
             CountInternal(Data.Vacation, 40);
@@ -24,6 +24,11 @@ namespace ReportAnalysis.Tests
         private static void CountInternal(string path, int count)
         {
             Assert.Equal(count, new Parser().Parse(path).Count());
+        }
+
+        private static void CountInternal(Stream stream, int count)
+        {
+            Assert.Equal(count, new Parser().Parse(stream).Count());
         }
 
         [Fact]
@@ -69,13 +74,18 @@ namespace ReportAnalysis.Tests
             RangeInternal("01.10.2022-09.12.2022", Data.Sber);
             RangeInternal("12.06.2022-12.12.2022", Data.Deniz);
             RangeInternal("25.07.2022-25.01.2023", Data.Ziraat);
-            RangeInternal("22.10.2022-28.12.2022", Data.Manual);
+            RangeInternal("22.04.3000-28.05.3000", MovementSources.GetManual());
             RangeInternal("18.09.2022-11.10.2022", Data.Vacation);
         }
 
         private void RangeInternal(string range, string path)
         {
             Assert.Equal(DateRange.Parse(range), new Ranger().GetRange(path));
+        }
+
+        private void RangeInternal(string range, Stream stream)
+        {
+            Assert.Equal(DateRange.Parse(range), new Ranger().GetRange(stream));
         }
 
         [Fact]

@@ -40,6 +40,23 @@ namespace ReportAnalysis.Core
             }
         }
 
+        public IEnumerable<Operation> Parse(Stream stream)
+        {
+            foreach (var operation in GetParser(stream).Parse(stream))
+            {
+                if (operation.IsUnknownCategory)
+                {
+                    var category = _categories.GetCategory(operation);
+                    var newOperation = operation.WithCategory(category);
+                    yield return newOperation;
+                }
+                else
+                {
+                    yield return operation;
+                }
+            }
+        }
+
         private IEnumerable<string> GetFilePaths(string path)
         {
             if (new DirectoryInfo(path).Exists)
@@ -56,6 +73,22 @@ namespace ReportAnalysis.Core
         private IParser GetParser(string path)
         {
             return FormatDetector.GetFormat(path) switch
+            {
+                Format.Sber => new SberParser(),
+                Format.SberVklad => new SberVkladParser(),
+                Format.Tinkoff => new TinkoffParser(),
+                Format.RawText => new ManualParser(),
+                Format.Deniz => new DenizParser(),
+                Format.ExpencesApp => new ExpensesAppParser(),
+                Format.Ararat => new AraratParser(),
+                Format.Ziraat => new ZiraatParser(),
+                _ => new StubParser(),
+            };
+        }
+
+        private IParser GetParser(Stream stream)
+        {
+            return FormatDetector.GetFormat(stream) switch
             {
                 Format.Sber => new SberParser(),
                 Format.SberVklad => new SberVkladParser(),

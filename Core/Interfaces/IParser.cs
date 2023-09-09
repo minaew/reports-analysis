@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using ReportAnalysis.Core.Models;
 
 namespace ReportAnalysis.Core.Interfaces
@@ -6,6 +7,8 @@ namespace ReportAnalysis.Core.Interfaces
     public interface IParser
     {
         IEnumerable<Operation> Parse(string path);
+
+        IEnumerable<Operation> Parse(Stream stream);
     }
 
     public interface IIdentifier
@@ -16,5 +19,7 @@ namespace ReportAnalysis.Core.Interfaces
     public interface IRanger
     {
         DateRange GetRange(string path);
+
+        DateRange GetRange(Stream stream);
     }
 }

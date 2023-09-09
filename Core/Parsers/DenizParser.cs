@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using ReportAnalysis.Core.Helpers;
 using ReportAnalysis.Core.Interfaces;
@@ -32,6 +33,11 @@ namespace ReportAnalysis.Core.Parsers
         {
             var rangeString = ExcelHelper.GetStringOrThrow(path, 4, 1);
             return DateRange.Parse(rangeString.Replace(" ", ""));
+        }
+
+        public DateRange GetRange(Stream stream)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }
