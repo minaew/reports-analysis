@@ -47,12 +47,12 @@ namespace ReportAnalysis.Core.Parsers
                 throw new ParsingException("invalid header");
             }
             var headerTokens = header.Split(",");
-            if (headerTokens.Length != 2)
-            {
-                throw new ParsingException("invalid header");
-            }
             var year = int.Parse(headerTokens[0], CultureInfo.InvariantCulture);
-            var currency = headerTokens[1];
+            var currency = string.Empty;
+            if (headerTokens.Length > 1)
+            {
+                currency = headerTokens[1];
+            }
 
             while (true)
             {

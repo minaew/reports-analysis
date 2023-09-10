@@ -67,7 +67,7 @@ namespace ReportAnalysis.Core.Models
         public static Money FromString(string money)
         {
             var tokens = money.Split(" ");
-            return new Money(double.Parse(tokens[0]), tokens[1]);
+            return new Money(double.Parse(tokens[0], CultureInfo.InvariantCulture), tokens[1]);
         }
 
         public double Value { get; set; }
