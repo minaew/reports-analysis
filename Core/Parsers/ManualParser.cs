@@ -20,8 +20,15 @@ namespace ReportAnalysis.Core.Parsers
 
         public DateRange GetRange(Stream stream)
         {
-            var dates = Parse(stream).Select(o => o.DateTime).ToList();
-            return new DateRange(dates.Min(), dates.Max());
+            var reader = new StreamReader(stream);
+
+            var header = reader.ReadLine();
+            if (string.IsNullOrEmpty(header))
+            {
+                throw new ParsingException("invalid header");
+            }
+            var headerTokens = header.Split(",");
+            return DateRange.Parse(headerTokens[0]);
         }
 
         public IEnumerable<Operation> Parse(string path)
@@ -47,7 +54,8 @@ namespace ReportAnalysis.Core.Parsers
                 throw new ParsingException("invalid header");
             }
             var headerTokens = header.Split(",");
-            var year = int.Parse(headerTokens[0], CultureInfo.InvariantCulture);
+            var range = DateRange.Parse(headerTokens[0]);
+            var year = range.Year;
             var currency = string.Empty;
             if (headerTokens.Length > 1)
             {
@@ -57,9 +65,13 @@ namespace ReportAnalysis.Core.Parsers
             while (true)
             {
                 var line = reader.ReadLine();
-                if (string.IsNullOrEmpty(line))
+                if (line == null)
                 {
                     yield break;
+                }
+                if (line == string.Empty)
+                {
+                    continue;
                 }
 
                 var tokens = line.Split(Separator);

@@ -79,8 +79,10 @@ def get_coverage():
             continue
         parts = line.split(',')
         label = parts[0]
-        start = parse(parts[1])
-        end = parse(parts[2])
+        range = parts[1]
+        range_part = range.split('-')
+        start = parse(range_part[0])
+        end = parse(range_part[1])
         items.append(item(start, end, label))
     return items
 
@@ -182,4 +184,4 @@ def plot_expences_bars(expences_table: expences_table):
 # plot_coverage(get_coverage())
 # plot_expences(get_expences())
 # plot_expences_bars(get_expences_table_test())
-plot_expences_bars(get_expences_table())
+# plot_expences_bars(get_expences_table())

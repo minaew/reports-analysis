@@ -29,6 +29,20 @@ namespace ReportAnalysis.Core.Models
 
         public IReadOnlyList<DateRange> Ranges => _ranges.Select(r => new DateRange(r)).ToList();
 
+        public int Year
+        {
+            get
+            {
+                var year = _ranges[0].From.Year;
+                var all = _ranges.All(r => r.From.Year == year && r.To.Year == year);
+                if (!all)
+                {
+                    throw new InvalidOperationException("Years is inconsistent");
+                }
+                return year;
+            }
+        }
+
         public DateRange Add(DateRange range) // fixme
         {
             var allRanges = _ranges.Concat(range._ranges).ToList();
@@ -94,6 +108,11 @@ namespace ReportAnalysis.Core.Models
             }
 
             return true;
+        }
+
+        public override string ToString()
+        {
+            return string.Join(",", _ranges.Select(r => r.ToString()));
         }
     }
 
