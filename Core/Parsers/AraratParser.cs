@@ -67,6 +67,7 @@ namespace ReportAnalysis.Core.Parsers
                         .ToList();
                     // todo: combine
                     line.RemoveAll(w => w.BoundingBox.Left > 134 && w.BoundingBox.Left < 135);
+                    line.RemoveAll(w => w.BoundingBox.Left > 98 && w.BoundingBox.Left < 143);
 
                     var dateTime = DateTime.ParseExact($"{line[0].Text} {line[1].Text}",
                         "dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture);
