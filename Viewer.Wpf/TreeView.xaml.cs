@@ -1,8 +1,8 @@
 ﻿namespace ReportAnalysis.Viewer.Wpf
 {
-    public partial class MainWindow
+    public partial class TreeView
     {
-        public MainWindow()
+        public TreeView()
         {
             InitializeComponent();
         }

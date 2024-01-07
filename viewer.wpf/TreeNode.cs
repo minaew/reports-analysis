@@ -4,7 +4,7 @@ using ReportAnalysis.Core.Models;
 
 namespace ReportAnalysis.Viewer.Wpf
 {
-    internal interface ITreeNode
+    public interface ITreeNode
     {
         int ID { get; }
 
