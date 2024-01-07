@@ -142,17 +142,23 @@ def get_expences_table() -> expences_table:
                              capture_output=True, text=True)
 
     periods = []
-    categories = ['all']
+    categories = ['housing', '?']
     data = []
-    for period_info in json.loads(process.stdout):
-        period_id = period_info['ID']
+    for period in json.loads(process.stdout):
+        period_id = period['ID']
         periods.append(period_id)
-        period_data = []
-        for key in categories:
-            if key in period_info['Categories']:
-                period_data.append(-period_info['Categories'][key])
+        present_categories = {}
+        for c in categories:
+            present_categories[c] = 0
+        for category, value in period['Categories'].items():
+            if category in categories:
+                key = category
             else:
-                period_data.append(0)
+                key = '?'
+            present_categories[key] = present_categories[key] + value
+        period_data = []
+        for c in categories:
+            period_data.append(-present_categories[c])
         data.append(period_data)
 
     return expences_table(categories, periods, data)
@@ -184,4 +190,4 @@ def plot_expences_bars(expences_table: expences_table):
 # plot_coverage(get_coverage())
 # plot_expences(get_expences())
 # plot_expences_bars(get_expences_table_test())
-# plot_expences_bars(get_expences_table())
+plot_expences_bars(get_expences_table())
