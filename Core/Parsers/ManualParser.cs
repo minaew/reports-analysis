@@ -88,7 +88,7 @@ namespace ReportAnalysis.Core.Parsers
                 var dateTime = DateTime.ParseExact(tokens[0].Trim(), "dd.MM", null);
                 dateTime = new DateTime(year, dateTime.Month, dateTime.Day);
 
-                var amount = Money.FromString(tokens[1].Trim() + " " + currency.Trim());
+                var amount = Money.FromString("-" + tokens[1].Trim() + " " + currency.Trim());
 
                 yield return new Operation
                 {
