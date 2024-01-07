@@ -15,7 +15,7 @@ namespace ReportAnalysis.Tests
             CountInternal(Data.Ararat, 77);
             CountInternal(Data.MahaSeptember, 47);
             CountInternal(Data.Sber, 28);
-            CountInternal(MovementSources.GetManual(), 9);
+            CountInternal(MovementSources.GetManual(), 1);
             CountInternal(Data.Deniz, 104);
             CountInternal(Data.Ziraat, 11);
             CountInternal(Data.Vacation, 40);
@@ -74,7 +74,7 @@ namespace ReportAnalysis.Tests
             RangeInternal("01.10.2022-09.12.2022", Data.Sber);
             RangeInternal("12.06.2022-12.12.2022", Data.Deniz);
             RangeInternal("25.07.2022-25.01.2023", Data.Ziraat);
-            RangeInternal("22.04.3000-28.05.3000", MovementSources.GetManual());
+            RangeInternal("01.06.2023-01.07.2023", MovementSources.GetManual());
             RangeInternal("18.09.2022-11.10.2022", Data.Vacation);
         }
 
