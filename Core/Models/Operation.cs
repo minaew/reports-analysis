@@ -125,6 +125,25 @@ namespace ReportAnalysis.Core.Models
             }
         }).Sum();
 
+        // 02.01.2023
+        public double TotalUsd => _dictionary.Select(pair =>
+        {
+            switch (pair.Key)
+            {
+                case "rub":
+                    return pair.Value.Value * 0.011218898;
+
+                case "try":
+                    return pair.Value.Value * 0.033816268;
+
+                case "amd":
+                    return pair.Value.Value * 0.0024765437;
+
+                default:
+                    throw new NotImplementedException();
+            }
+        }).Sum();
+
         public override string ToString()
         {
             return $"{(int)TotalRub} " +

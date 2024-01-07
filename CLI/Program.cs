@@ -154,11 +154,11 @@ namespace ReportAnalysis.CLI
                 {
                     ID = period.Key
                 };
-                summary.Categories["all"] = period.Select(o => o.Amount).Select(a => new AggregatedMoney(a)).Select(am => am.TotalRub).Sum();
+                summary.Categories["all"] = period.Select(o => o.Amount).Select(a => new AggregatedMoney(a)).Select(am => am.TotalUsd).Sum();
 
                 foreach (var cat in period.GroupBy(o => o.Category))
                 {
-                    var total = cat.Select(o => o.Amount).Select(a => new AggregatedMoney(a)).Select(am => am.TotalRub).Sum();
+                    var total = cat.Select(o => o.Amount).Select(a => new AggregatedMoney(a)).Select(am => am.TotalUsd).Sum();
                     summary.Categories[cat.Key] = total;
                 }
 
