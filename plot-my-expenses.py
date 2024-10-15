@@ -1,6 +1,8 @@
 import sqlite3
 import datetime
 
+# todo: sys.argv[0] <- db_path
+
 con = sqlite3.connect("..\\myexpenses-backup-20240123-143443\\BACKUP")
 cur = con.cursor()
 
@@ -13,9 +15,10 @@ cur = con.cursor()
 # ('table', 'categories', 'categories', 20, 'CREATE TABLE categories (_id integer primary key autoincrement, label text not null, label_normalized text,
 #  parent_id integer references categories(_id) ON DELETE CASCADE, usages integer default 0, last_used datetime, color integer, icon string, uuid text, type integer, 
 #  UNIQUE (label,parent_id))')
-categories = { }
+categories = { } # { id, label }
 for row in cur.execute("SELECT * FROM categories"):
     id = row[0]
+    # print(id)
     label_normalized = row[2]
     # print(f"{id}\t{label_normalized}")
     categories[id] = label_normalized
@@ -26,9 +29,15 @@ for row in cur.execute("SELECT * FROM categories"):
 # method_id integer references paymentmethods(_id),parent_id integer references transactions(_id) ON DELETE CASCADE, status integer default 0, 
 # cr_status text not null check (cr_status in ('UNRECONCILED','CLEARED','RECONCILED','VOID')) default 'RECONCILED',number text, uuid text, original_amount integer,
 # original_currency text, equivalent_amount integer,  debt_id integer references debts(_id) ON DELETE SET NULL)")     
-categories_sum = { }
+categories_sum = { } # { id, sum }
+first_date = datetime.datetime.max
+last_date = datetime.datetime.min
 for row in cur.execute("SELECT * FROM transactions"):
     date = datetime.datetime.fromtimestamp(row[2])
+    if date < first_date:
+        first_date = date
+    if date > last_date:
+        last_date = date
     id = row[0]
     amount = row[4]
     cat_id = row[5]
@@ -38,6 +47,8 @@ for row in cur.execute("SELECT * FROM transactions"):
         categories_sum[cat_id] = categories_sum[cat_id] + amount
     else:
         categories_sum[cat_id] = amount
+
+print(f"{first_date.date()} - {last_date.date()}")
 
 for id in categories_sum:
     print(f"{categories[id]}\t{categories_sum[id]}")
