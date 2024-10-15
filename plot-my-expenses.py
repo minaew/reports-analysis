@@ -16,6 +16,7 @@ cur = con.cursor()
 #  parent_id integer references categories(_id) ON DELETE CASCADE, usages integer default 0, last_used datetime, color integer, icon string, uuid text, type integer, 
 #  UNIQUE (label,parent_id))')
 categories = { } # { id, label }
+categories[-1] = "all"
 for row in cur.execute("SELECT * FROM categories"):
     id = row[0]
     # print(id)
@@ -30,6 +31,7 @@ for row in cur.execute("SELECT * FROM categories"):
 # cr_status text not null check (cr_status in ('UNRECONCILED','CLEARED','RECONCILED','VOID')) default 'RECONCILED',number text, uuid text, original_amount integer,
 # original_currency text, equivalent_amount integer,  debt_id integer references debts(_id) ON DELETE SET NULL)")     
 categories_sum = { } # { id, sum }
+categories_sum[-1] = 0 # all
 first_date = datetime.datetime.max
 last_date = datetime.datetime.min
 for row in cur.execute("SELECT * FROM transactions"):
@@ -47,6 +49,7 @@ for row in cur.execute("SELECT * FROM transactions"):
         categories_sum[cat_id] = categories_sum[cat_id] + amount
     else:
         categories_sum[cat_id] = amount
+    categories_sum[-1] = categories_sum[-1] + amount
 
 print(f"{first_date.date()} - {last_date.date()}")
 
